@@ -11,11 +11,15 @@ function [rx,ry,rz,error] = findUnitVectors(xxCam1,xxCam3a,yxCam3a,zxCam1,...
 % vector.  The result is output as the "error".  In a perfect system, this
 % value would always be zero.
 
-
 % The z component of the y unit vector (zyCam2) be effected by the angle of
 % the camera, as well as the yaw.
 % Note that cam 2 and cam 3b are tracking the same dots so no need to
 % normalize before this calculation.
+
+% Compensating for the fact that the slant camera sees an apparent
+% displacement when is model is flying level but yawed.
+
+% Need to verify further. 
 zyCam2 = (zyCam2-xyCam3b*sind(cameraAngle))/cosd(cameraAngle);
 yyCam2 = (yyCam2-xyCam3b*cosd(cameraAngle))/sind(cameraAngle);
 % note that the x component of the x unit vector and the y component of the
