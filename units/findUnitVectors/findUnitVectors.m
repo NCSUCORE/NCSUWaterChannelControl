@@ -1,5 +1,5 @@
-function [rx,ry,rz,error] = findUnitVectors(xxCam1,xxCam3a,yxCam3a,zxCam1,...
-    xyCam3b,yyCam2,yyCam3b,zyCam2,sideSep,bottomASep,bottomBSep,cameraAngle)
+function [rx,ry,rz,error] = findUnitVectors(xxCam1,zxCam1,xxCam2a,yxCam2a,...
+    xyCam2b,yyCam2b,zyCam3,yyCam3,sideSep,bottomASep,bottomBSep,cameraAngle)
 %#codegen
 
 % This function has 2 purposes:
@@ -20,8 +20,8 @@ function [rx,ry,rz,error] = findUnitVectors(xxCam1,xxCam3a,yxCam3a,zxCam1,...
 % displacement when is model is flying level but yawed.
 
 % Need to verify further. 
-zyCam2 = (zyCam2-xyCam3b*sind(cameraAngle))/cosd(cameraAngle);
-yyCam2 = (yyCam2-xyCam3b*cosd(cameraAngle))/sind(cameraAngle);
+zyCam3 = (zyCam3-xyCam2b*sind(cameraAngle))/cosd(cameraAngle);
+yyCam2b = (yyCam2b-xyCam2b*cosd(cameraAngle))/sind(cameraAngle);
 % note that the x component of the x unit vector and the y component of the
 % y unit vector are both over-determined (calculated twice).  We're gonna
 % use this to our advantage by constructing the x and y unit vectors twice
@@ -29,8 +29,8 @@ yyCam2 = (yyCam2-xyCam3b*cosd(cameraAngle))/sind(cameraAngle);
 % noise and reduce error somewhat.
 
 % Calculate the body fixed x unit vectors
-rx1 = [xxCam1  yxCam3a*sideSep/bottomASep zxCam1];
-rx2 = [xxCam3a yxCam3a                    zxCam1*bottomASep/sideSep];
+rx1 = [xxCam1  yxCam2a*sideSep/bottomASep zxCam1];
+rx2 = [xxCam2a yxCam2a                    zxCam1*bottomASep/sideSep];
 
 % normalize both vectors
 rx1 = rx1./sqrt((rx1(1))^2+(rx1(2))^2+(rx1(3))^2);
@@ -43,11 +43,11 @@ rx = (rx1+rx2)./2;
 rx = rx./sqrt((rx(1))^2+(rx(2))^2+(rx(3))^2);
 
 % Calculate the body fixed y unit vectors
-ry1 = [xyCam3b yyCam2 zyCam2];  % This line seems
+ry1 = [xyCam2b yyCam2b zyCam3];  % This line seems
 % problematic, probably need to do an adjustment to yyCam2 before
 % implementing this.  Similiar to adjustment done to zyCam2 above.
 % ry = [xyCam3b                       yyCam3b zyCam2*bottomASep/bottomBSep];
-ry2 = [xyCam3b yyCam3b zyCam2]; % cam3b and cam2 track the same dots, so there should be no need for scaling/normalization in this line
+ry2 = [xyCam2b yyCam3 zyCam3]; % cam3b and cam2 track the same dots, so there should be no need for scaling/normalization in this line
 
 
 % normalize both vectors
