@@ -32,15 +32,36 @@ yyCam2b = (yyCam2b-xyCam2b*cosd(cameraAngle))/sind(cameraAngle);
 rx1 = [xxCam1  yxCam2a*sideSep/bottomASep zxCam1];
 rx2 = [xxCam2a yxCam2a                    zxCam1*bottomASep/sideSep];
 
-% normalize both vectors
-rx1 = rx1./sqrt((rx1(1))^2+(rx1(2))^2+(rx1(3))^2);
-rx2 = rx2./sqrt((rx2(1))^2+(rx2(2))^2+(rx2(3))^2);
+% Calculate magnitudes of vectors
+rx1Mag = sqrt((rx1(1))^2+(rx1(2))^2+(rx1(3))^2);
+rx2Mag = sqrt((rx2(1))^2+(rx2(2))^2+(rx2(3))^2);
 
-% average the two vectors
-rx = (rx1+rx2)./2;
+% If both magnitudes not equal to zero, perform normal calculation
+if (rx1Mag ~= 0 && rx2Mag ~= 0)
+   % normalize both vectors
+   rx1 = rx1./rx1Mag;
+   rx2 = rx2./rx2Mag;
 
-% normalize the result
-rx = rx./sqrt((rx(1))^2+(rx(2))^2+(rx(3))^2);
+   % average the two vectors
+   rx = (rx1+rx2)./2;
+
+   % normalize the result
+   rx = rx./sqrt((rx(1))^2+(rx(2))^2+(rx(3))^2);
+   
+% If rx1 magnitude not equal to zero, use rx1;
+elseif (rx1Mag ~= 0)
+    rx1 = rx1./rx1Mag;
+    rx = rx1;
+    
+% If rx2 magnitude not equal to zero, use rx2;
+elseif (rx2Mag ~= 0)
+    rx2 = rx2./rx2Mag;
+    rx = rx2;
+    
+% Else, set rx to default value
+else
+    rx = [1 0 0];
+end
 
 % Calculate the body fixed y unit vectors
 ry1 = [xyCam2b yyCam2b zyCam3];  % This line seems
@@ -49,16 +70,36 @@ ry1 = [xyCam2b yyCam2b zyCam3];  % This line seems
 % ry = [xyCam3b                       yyCam3b zyCam2*bottomASep/bottomBSep];
 ry2 = [xyCam2b yyCam3 zyCam3]; % cam3b and cam2 track the same dots, so there should be no need for scaling/normalization in this line
 
+% Calculate magnitudes of vectors
+ry1Mag = sqrt((ry1(1))^2+(ry1(2))^2+(ry1(3))^2);
+ry2Mag = sqrt((ry2(1))^2+(ry2(2))^2+(ry2(3))^2);
 
-% normalize both vectors
-ry1 = ry1./sqrt((ry1(1))^2+(ry1(2))^2+(ry1(3))^2);
-ry2 = ry2./sqrt((ry2(1))^2+(ry2(2))^2+(ry2(3))^2);
+% If both magnitudes not equal to zero, perform normal calculation
+if (ry1Mag ~= 0 && ry2Mag ~= 0)
+   % normalize both vectors
+   ry1 = ry1./sqrt((ry1(1))^2+(ry1(2))^2+(ry1(3))^2);
+   ry2 = ry2./sqrt((ry2(1))^2+(ry2(2))^2+(ry2(3))^2);
 
-% average the two vectors
-ry = (ry1+ry2)./2;
+   % average the two vectors
+   ry = (ry1+ry2)./2;
 
-% normalize the result
-ry = ry./sqrt((ry(1))^2+(ry(2))^2+(ry(3))^2);
+   % normalize the result
+   ry = ry./sqrt((ry(1))^2+(ry(2))^2+(ry(3))^2);
+   
+   % If ry1 magnitude not equal to zero, use ry1;
+elseif (ry1Mag ~= 0)
+    ry1 = ry1./ry1Mag;
+    ry = ry1;
+    
+% If rx2 magnitude not equal to zero, use rx2;
+elseif (ry2Mag ~= 0)
+    ry2 = ry2./ry2Mag;
+    ry = ry2;
+    
+% Else, set rx to default value
+else
+    ry = [0 1 0];
+end
 
 % z = x cross y
 rz = cross(rx, ry);
