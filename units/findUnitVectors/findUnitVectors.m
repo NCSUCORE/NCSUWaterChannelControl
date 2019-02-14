@@ -1,5 +1,5 @@
 function [rx,ry,rz,error] = findUnitVectors(unitVecCam1,unitVecCam2a,...
-    unitVecCam2b,unitVecCam3,sideSep,bottomASep,bottomBSep,cameraAngle,DSB,DBL)
+    unitVecCam2b,unitVecCam3,sideSep,bottomASep,bottomBSep,DSB,DBL)
 %#codegen
 
 % This function has 2 purposes:
@@ -108,8 +108,10 @@ function [rx,ry,rz,error] = findUnitVectors(unitVecCam1,unitVecCam2a,...
 % error = dot(rx,ry);
 %%
 
-dSB = [unitVecCam1(1); unitVecCam1(2);unitVecCam2a(1);unitVecCam2a(2)];
-dBL = -[unitVecCam2b(1);unitVecCam2b(2);unitVecCam3(1);unitVecCam3(2)];
+dSB = [unitVecCam1(1)/sideSep;unitVecCam1(2)/sideSep;...
+    unitVecCam2a(1)/bottomASep;unitVecCam2a(2)/bottomASep];
+dBL = -[unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
+    unitVecCam3(1)/bottomBSep;unitVecCam3(2)/bottomBSep];
 
 rx = DSB * dSB;
 ry = DBL * dBL;
