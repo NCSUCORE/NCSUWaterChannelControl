@@ -116,6 +116,28 @@ dBL = -[unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
 rx = DSB * dSB;
 ry = DBL * dBL;
 
+% Calculate magnitudes of vectors
+rxMag = sqrt((rx(1))^2+(rx(2))^2+(rx(3))^2);
+
+% If both magnitudes not equal to zero, perform normal calculation
+if (rxMag ~= 0)
+    % normalize vector
+    rx = rx./rxMag;
+else
+    rx = [1;0;0];
+end
+
+% Calculate magnitudes of vectors
+ryMag = sqrt((ry(1))^2+(ry(2))^2+(ry(3))^2);
+
+% If both magnitudes not equal to zero, perform normal calculation
+if (ryMag ~= 0)
+    % normalize vector
+    ry = ry./ryMag;
+else
+    ry = [0;1;0];
+end
+
 % z = x cross y
 rz = cross(rx, ry);
 
