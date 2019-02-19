@@ -27,9 +27,9 @@ if strcmpi(answer,'y')
     fprintf('\nOpening all models\n')
     % Window positions determined from using get_param(gcs,'location')
     windowPositions = [ -6     0   775   418;...
-                        762           0        1543         418;...
-                        -6   412   775   830;...
-                        762         412        1543         830];
+        762           0        1543         418;...
+        -6   412   775   830;...
+        762         412        1543         830];
     % Open all the individual models
     for ii = 2:5
         open_system(fullfile(baseDir,'models',sprintf('model%d',ii),sprintf('model%d_cm.slx',ii)))
@@ -39,26 +39,28 @@ if strcmpi(answer,'y')
         set_param(gcs, 'ZoomFactor','FitSystem')
         
     end
-    
-    % Build and connect
-    fprintf('\nBuilding all models\n')
-    for ii = 2:5
-        % Build models:
-        try
-            fprintf('\nBuilding model%d_cm.slx\n',ii)
-            eval(sprintf('model%d_cm([], [], [], ''compile'')',ii));
-            % Sometimes the above line results in a bug that locks the
-            % models from editing etc.  To break out of this use: model2_cm([], [], [], 'term')
-            % You may need to run that multiple times to get it to work.
-        catch errMsg
-            rethrow(errMsg)
-        end
-        % Connect to targets:
-        try
-            fprintf('\nConnecting to target machine %d\n',ii)
-            set_param(sprintf('model%d_cm',ii),'SimulationCommand','connect');
-        catch errMsg
-            rethrow(errMsg)
+    % If this is the host laptop and we're logged in as the generic user
+    if strcmpi(getenv('computername'),'vermillionlab4') && strcmpi(getenv('username'),'MAE-NCSUCORE')
+        % Build and connect
+        fprintf('\nBuilding all models\n')
+        for ii = 2:5
+            % Build models:
+            try
+                fprintf('\nBuilding model%d_cm.slx\n',ii)
+                eval(sprintf('model%d_cm([], [], [], ''compile'')',ii));
+                % Sometimes the above line results in a bug that locks the
+                % models from editing etc.  To break out of this use: model2_cm([], [], [], 'term')
+                % You may need to run that multiple times to get it to work.
+            catch errMsg
+                rethrow(errMsg)
+            end
+            % Connect to targets:
+            try
+                fprintf('\nConnecting to target machine %d\n',ii)
+                set_param(sprintf('model%d_cm',ii),'SimulationCommand','connect');
+            catch errMsg
+                rethrow(errMsg)
+            end
         end
     end
 end
