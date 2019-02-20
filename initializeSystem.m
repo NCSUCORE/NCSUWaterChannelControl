@@ -23,7 +23,13 @@ answer = input([...
 stop(t);
 delete(t);
 
+
 if strcmpi(answer,'y')
+    
+    % Load parameters structure
+    fprintf('\nLoading params struct\n')
+    load('params.mat')
+    
     fprintf('\nOpening all models\n')
     % Open all the individual models
     for ii = 2:5
@@ -39,6 +45,8 @@ if strcmpi(answer,'y')
     % Check for target first probably ought to use some kind of try/catch
     % Add code to open GUI once we build it.
 end
+
+
 
 fprintf('\nDone\n')
 
