@@ -30,6 +30,7 @@ if strcmpi(answer,'y')
         open_system(fullfile(baseDir,'models',sprintf('model%d',ii),sprintf('model%d_cm.slx',ii)))
         % Add code here to reposition/resize windows to tile them
     end
+    % Check for appropriate target
     
     % Build and connect
     fprintf('\nBuilding all models\n')
