@@ -20,3 +20,11 @@ DBL = (ABL'*ABL)\ABL';
 % protection
 cameraConfidenceVector = abs(cameraConfidenceVector);
 cameraConfidenceVector = cameraConfidenceVector./max([norm(cameraConfidenceVector), eps]);
+
+% Reshape all position vectors to be columns
+sideCamPositionVec_cm   = reshape(sideCamPositionVec_cm,[3,1]);
+botCamPositionVec_cm    = reshape(botCamPositionVec_cm,[3,1]);
+slantCamPositionVec_cm  = reshape(slantCamPositionVec_cm,[3,1]);
+sidePositionVecBF_cm    = reshape(sidePositionVecBF_cm,[3,1]);
+botAPositionVecBF_cm    = reshape(botAPositionVecBF_cm,[3,1]);
+botBPositionVecBG_cm    = reshape(botBPositionVecBG_cm,[3,1]);
