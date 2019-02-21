@@ -11,4 +11,3 @@ set_param(recv_path,'ipAddress',correctIP);
 close_system(systemPath);
 
 end
-
