@@ -108,6 +108,9 @@ function [rx,ry,rz,error] = findUnitVectors(unitVecCam1,unitVecCam2a,...
 % error = dot(rx,ry);
 %%
 
+rx = [0;0;0];
+ry = [0;0;0];
+
 dSB = [unitVecCam1(1)/sideSep;unitVecCam1(2)/sideSep;...
     unitVecCam2a(1)/bottomASep;unitVecCam2a(2)/bottomASep];
 dBL = -[unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
