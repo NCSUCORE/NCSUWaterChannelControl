@@ -26,9 +26,9 @@ delete(t);
 
 if strcmpi(answer,'y')
     
-    % Load parameters structure
+    % Load parameters structure into base workspace
     fprintf('\nLoading params struct\n')
-    load('params.mat')
+    loadParams
     
     fprintf('\nOpening all models\n')
     % Window positions determined from using get_param(gcs,'location')

@@ -16,11 +16,6 @@ ABL = [GFC2Bottom(1,:);GFC2Bottom(2,:);GFC2Slant(1,:);GFC2Slant(2,:)];
 DSB = (ASB'*ASB)\ASB';
 DBL = (ABL'*ABL)\ABL';
 
-% Normalize camera confidence vector with negative number and zero
-% protection
-cameraConfidenceVector = abs(cameraConfidenceVector);
-cameraConfidenceVector = cameraConfidenceVector./max([norm(cameraConfidenceVector), eps]);
-
 % Reshape all position vectors to be columns
 sideCamPositionVec_cm   = reshape(sideCamPositionVec_cm,[3,1]);
 botCamPositionVec_cm    = reshape(botCamPositionVec_cm,[3,1]);

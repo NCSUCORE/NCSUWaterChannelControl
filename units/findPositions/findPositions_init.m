@@ -20,9 +20,3 @@ alpha = [iS';jS';iA';iA';jA';jA'];
 alphaBar = (alpha'*alpha)\alpha';
 alpha0 = blkdiag(iS',jS',iA',iA',jA',jA');
 gamma = [repmat(rSG,[2 1]);repmat(rAG,[4 1])];
-
-
-
-
-
-

@@ -1,4 +1,7 @@
-function createParam(name,value,min,max,description)
+function createParam(name,value,min,max,description,units)
+
+% pre-pend the units to the description
+description = ['[' units '] ' description];
 
 if isscalar(value)
     evalin('base',sprintf('params.%s = Simulink.Parameter(%s);',name,num2str(value)));
