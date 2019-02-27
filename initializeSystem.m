@@ -23,7 +23,6 @@ answer = input([...
 stop(t);
 delete(t);
 
-
 if strcmpi(answer,'y')
     
     % Load parameters structure into base workspace
