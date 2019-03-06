@@ -7,7 +7,7 @@ var = evalin('base',varName);
 max = var.Max;
 min = var.Min;
 
-limit = [max min];
+limit = [min max];
 
 end
 
