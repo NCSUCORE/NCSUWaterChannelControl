@@ -1,4 +1,4 @@
-function [variable,entry] = getEntry(parameterName)
+function [variable,entry] = getVariable(parameterName)
 %GETENTRY Summary of this function goes here
 %   Detailed explanation goes here
 
