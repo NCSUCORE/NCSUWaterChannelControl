@@ -1,11 +1,16 @@
-function val = setEntry(parameterName,value)
+function variable = setEntry(parameterName,value,varargin)
 %SETENTRY Summary of this function goes here
 %   Detailed explanation goes here
 
-[val, var] = getEntry(parameterName);
+[variable,entry] = getEntry(parameterName);
 
-val.Value = value;
-setValue(var,val);
+if (variable.Dimensions(1) > 1 || variable.Dimensions(2) > 1)
+    variable.Value(varargin{1}) = value;
+else
+    variable.Value = value;
+end
+
+setValue(entry,variable);
 
 end
 
