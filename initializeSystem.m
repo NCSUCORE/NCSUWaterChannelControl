@@ -78,7 +78,8 @@ if strcmpi(answer,'y')
     % Add code to open GUI once we build it.
 end
 
-
+% Initialize controllers
+controllers_init
 
 fprintf('\nDone\n')
 
