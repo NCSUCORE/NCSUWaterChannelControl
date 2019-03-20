@@ -11,7 +11,7 @@ for ii = 1:length(files)
     % Create the Simulink.Variant object
     evalin('base',...
         sprintf('VSS_%s = Simulink.Variant(''CONTROLLER==%d'');',...
-        upper(files(ii).name),ii));
+        files(ii).name,ii));
     % If this is the constant setpoints controller, set that as the active
     % variant.  This essentially sets the default.
     if strcmpi(files(ii).name,'CONSTANTSETPOINTS')
