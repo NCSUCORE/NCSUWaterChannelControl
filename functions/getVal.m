@@ -1,7 +1,12 @@
-function [outputArg1,outputArg2] = getVal(inputArg1,inputArg2)
+function value = getVal(parameterName)
 %GETVAL Summary of this function goes here
 %   Detailed explanation goes here
-outputArg1 = inputArg1;
-outputArg2 = inputArg2;
+
+dict = Simulink.data.dictionary.open('paramsDataDictionary.sldd');
+sect = getSection(dict,'Design Data');
+entry = getEntry(sect,parameterName);
+variable = getValue(entry);
+value = variable.Value;
+
 end
 
