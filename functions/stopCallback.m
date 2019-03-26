@@ -65,11 +65,11 @@ fileName = matlab.lang.makeValidName(fileName);
 fileName = [fileName '.mat'];
 filePath = fullfile(fileparts(which('WaterChannelControl.prj')),'output','data');
 % Get params structure from base workspace so we can save it too
-params = evalin('base','params');
+% params = evalin('base','params');
 % Notify the user of what we're doing
 fprintf('\nSaving tsc and params to\n%s\n',fullfile(filePath,fileName))
 % Save the data to the output\data folder
-save(fullfile(filePath,fileName),'tsc','params')
+% save(fullfile(filePath,fileName),'tsc','params')
 % Send tsc to the base workspace
 assignin('base','tsc',tsc)
 end

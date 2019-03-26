@@ -4,7 +4,7 @@
 % Set working directory to output
 fprintf('\nSetting working directory to output\n')
 baseDir = fileparts(which(mfilename)); % Get the path to the highest level of the project
-cd(fullfile(baseDir,'output')) % Set the working directory
+% cd(fullfile(baseDir,'output')) % Set the working directory
 
 % Open the simulink project file
 fprintf('\nOpening simulink project WaterChannelControl.prj\n\n')
@@ -27,7 +27,7 @@ if strcmpi(answer,'y')
     
     % Load parameters structure into base workspace
     fprintf('\nLoading params struct\n')
-    loadParams
+%     loadParams
     
     fprintf('\nOpening all models\n')
     % Window positions determined from using get_param(gcs,'location')
@@ -52,7 +52,7 @@ if strcmpi(answer,'y')
             % Build models:
             try
                 fprintf('\nBuilding model%d_cm.slx\n',ii)
-                eval(sprintf('model%d_cm([], [], [], ''compile'')',ii));
+%                 eval(sprintf('model%d_cm([], [], [], ''compile'')',ii));
                 % Sometimes the above line results in a bug that locks the
                 % models from editing etc.  To break out of this use: model2_cm([], [], [], 'term')
                 % You may need to run that multiple times to get it to work.
@@ -62,7 +62,7 @@ if strcmpi(answer,'y')
             % Connect to targets:
             try
                 fprintf('\nConnecting to target machine %d\n',ii)
-                set_param(sprintf('model%d_cm',ii),'SimulationCommand','connect');
+%                 set_param(sprintf('model%d_cm',ii),'SimulationCommand','connect');
             catch errMsg
                 rethrow(errMsg)
             end
