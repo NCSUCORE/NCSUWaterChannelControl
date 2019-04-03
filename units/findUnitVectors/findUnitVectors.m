@@ -142,5 +142,5 @@ end
 rz = cross(rx, ry);
 
 % error is the dot product of the two
-error = dot(rx,ry);
+error = abs(dot(rx,ry));
 end
