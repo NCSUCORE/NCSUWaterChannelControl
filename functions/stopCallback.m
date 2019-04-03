@@ -69,7 +69,7 @@ filePath = fullfile(fileparts(which('WaterChannelControl.prj')),'output','data')
 % Notify the user of what we're doing
 fprintf('\nSaving tsc and params to\n%s\n',fullfile(filePath,fileName))
 % Save the data to the output\data folder
-% save(fullfile(filePath,fileName),'tsc','params')
+save(fullfile(filePath,fileName),'tsc')
 % Send tsc to the base workspace
 assignin('base','tsc',tsc)
 end
