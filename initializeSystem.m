@@ -4,7 +4,7 @@
 % Set working directory to output
 fprintf('\nSetting working directory to output\n')
 baseDir = fileparts(which(mfilename)); % Get the path to the highest level of the project
-% cd(fullfile(baseDir,'output')) % Set the working directory
+cd(fullfile(baseDir,'output')) % Set the working directory
 
 % Open the simulink project file
 fprintf('\nOpening simulink project WaterChannelControl.prj\n\n')
