@@ -21,16 +21,22 @@ slntDotMean = mean(slntDot(:,:,sampleSize:end),3);
 % botBMean = botDotMean(1:4);
 % botAMean = botDotMean(5:8);
 
-end_time = 11;
-pert = zeros(16,1,end_time);
-range = linspace(-5,5,end_time);
-resp = zeros(3,1,end_time);
+end_time = 10;
+pert = zeros(16,1,end_time+1);
+range = linspace(-5,5,end_time+1);
+resp = zeros(1,end_time+1);
 response = timeseries(resp);
+total = cell(16,3);
 
 for i = 1:16
     pert(i,:,:) = range;
     pertubation = timeseries(pert);
     sim('sensitivity_th');
     pert(i,:,:) = zeros(1,length(range));
-    
+    response = roll_deg;
+    total{i,1} = response;
+    response = pitch_deg;
+    total{i,2} = response;
+    response = yaw_deg;
+    total{i,3} = response;
 end
