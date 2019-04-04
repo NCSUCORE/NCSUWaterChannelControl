@@ -18,15 +18,20 @@ sideDotMean = mean(sideDot(:,:,sampleSize:end),3);
 botDotMean = mean(botDot(:,:,sampleSize:end),3);
 slntDotMean = mean(slntDot(:,:,sampleSize:end),3);
 
-% botBMean = botDotMean(1:4);
-% botAMean = botDotMean(5:8);
-
 end_time = 10;
+rollMean = ones(1,end_time+1)*rollDegMean;
+pitchMean = ones(1,end_time+1)*pitchDegMean;
+yawMean = ones(1,end_time+1)*yawDegMean;
 pert = zeros(16,1,end_time+1);
 range = linspace(-5,5,end_time+1);
-resp = zeros(1,end_time+1);
+resp = zeros(1,1,end_time+1);
 response = timeseries(resp);
 total = cell(16,3);
+
+pixel = {'sideLeftRow';'sideLeftCol';'sideRightRow';'sideRightCol';...
+         'botBLeftRow';'botBLeftCol';'botBRightRow';'botBRightCol';...
+         'botALeftRow';'botALeftCol';'botARightRow';'botARightCol';...
+         'slantLeftRow';'slantLeftCol';'slantRightRow';'slantRightCol'};
 
 for i = 1:16
     pert(i,:,:) = range;
@@ -39,4 +44,35 @@ for i = 1:16
     total{i,2} = response;
     response = yaw_deg;
     total{i,3} = response;
+end
+
+for i = 1:16
+    fig = figure(i);
+    fig.Name = pixel{i,1};
+    sgtitle(pixel{i,1});
+    
+    subplot(1,3,1);
+    data = total{i,1}.Data - rollMean;
+    plot(range', data(:,1));
+    grid;
+    xlabel('$\Delta$ Pixels','interpreter','latex');
+    ylabel('$\Delta$ Roll','interpreter','latex');
+    
+    subplot(1,3,2);
+    data = total{i,2}.Data - pitchMean;
+    plot(range', data(:,1));
+    grid;
+    xlabel('$\Delta$ Pixels','interpreter','latex');
+    ylabel('$\Delta$ Pitch','interpreter','latex');
+    
+    subplot(1,3,3);
+    data = total{i,3}.Data - yawMean;
+    plot(range', data(:,1));
+    grid;
+    xlabel('$\Delta$ Pixels','interpreter','latex');
+    ylabel('$\Delta$ Yaw','interpreter','latex');
+    
+    name = [pixel{i,1},'.png'];
+    path = fullfile(fileparts(which(mfilename)),name);
+    saveas(fig,path);
 end
