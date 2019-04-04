@@ -10,6 +10,7 @@
 \usepackage{verbatim}
 \usepackage{caption}
 \usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\usepackage{multicol}
 \definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
 \definecolor{mylilas}{RGB}{170,55,241}
 
@@ -38,10 +39,11 @@
 \author{Jack Cole}
 \date{}
 
-
-
 \begin{document}
+	
 \maketitle
+
+\begin{multicols}{2}
 \section{Introduction}
 What questions are we trying to answer
 \subsection{Methods}
@@ -57,6 +59,7 @@ For example figure \ref{fig:botALeftCol} shows some stuff.
 \subsection{Discussion}
 What conclusions can we draw, specifically: what was as expected, what was not as expected?
 
+\end{multicols}
 \end{document} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -90,5 +93,3 @@ Code to manually create a table:
 	\end{tabular}
 	\caption{Distributions $C_l$ and $cC_l/c_{avg}C_L$ as obtained from both the lifting line theory (LLT) code for the tapered wing. \label{tab:TaperedChordWing}}
 \end{table}
-
-

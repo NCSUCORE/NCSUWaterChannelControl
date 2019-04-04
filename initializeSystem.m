@@ -1,4 +1,6 @@
 %% Script to initialize the NCSU water channel control system
+%% DO NOT RUN SECTION
+
 % Please do not move this file
 
 % Set working directory to output
