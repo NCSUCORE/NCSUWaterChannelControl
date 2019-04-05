@@ -44,22 +44,120 @@
 \maketitle
 
 \begin{multicols}{2}
+	
 \section{Introduction}
+
 What questions are we trying to answer
-\subsection{Methods}
+
+The purpose of this analysis was to determine the sensitivity of the image processing software. Specifically, the Find6DOF block was tested in Simulink. This system is given inputs of the pixel locations of each white dot on the body of the BAT and outputs the corresponding roll, pitch, and yaw Euler angles, as well as the center of mass position of the BAT. For the purpose of this analysis, solely the Euler angles were processed. In order to perform an accurate study, each pixel was modified separately and the corresponding change in Euler angle was observed.
+
+\section{Methods}
+
 How did we try to answer them
-\subsection{Results}
+
+In the real system, each camera (side, bottom, and slant) captured four pixels location corresponding to the row and column of each pair of dots. The side and slant camera recorded only one pair of dots, while the bottom camera recorded two pairs of dots, denoted the A and B sets. The A set was lined up the x direction in the ground frame while the B set was lined up with the y direction in the ground frame.
+
+In order to observe specific changes with regard to each dot location, each pixels was modified separately and the resulting Euler angles were plotted accordingly. More specifically, the row and column of each dot location were individually modified and plotted in reference to the change in Euler angle. To that end, sixteen separate graphs were plotted   
+
+\section{Results}
+
 Present the results
 For example figure \ref{fig:botALeftCol} shows some stuff.
+
+% Side Camera Pixels
+
 \begin{figure}[H]
-	\includegraphics[width=0.9\columnwidth]{botALeftCol.png}
-	\caption{Caption here.\label{fig:botALeftCol}}
+	\includegraphics[width=0.9\columnwidth]{sideLeftRow.png}
+	\caption{Side Camera Left Dot, Row\label{fig:sideLeftRow}}
 \end{figure}
 
-\subsection{Discussion}
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{sideLeftCol.png}
+	\caption{Side Camera Left Dot, Column\label{fig:sideLeftCol}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{sideRightRow.png}
+	\caption{Side Camera Right Dot, Row\label{fig:sideRightRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{sideRightCol.png}
+	\caption{Side Camera Right Dot, Column\label{fig:sideRightCol}}
+\end{figure}
+
+% Bottom A Camera Pixels
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botATopRow.png}
+	\caption{Bottom A Camera Top Dot, Row\label{fig:botATopRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botATopCol.png}
+	\caption{Bottom A Camera Top Dot, Column\label{fig:botATopCol}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botABottomRow.png}
+	\caption{Bottom A Camera Bottom Dot, Row\label{fig:botABottomRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botABottomCol.png}
+	\caption{Bottom A Camera Bottom Dot, Column\label{fig:botABottomCol}}
+\end{figure}
+
+% Bottom B Camera Pixels
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botBLeftRow.png}
+	\caption{Bottom B Camera Left Dot, Row\label{fig:botBLeftRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botBLeftCol.png}
+	\caption{Bottom B Camera Left Dot, Column\label{fig:botBLeftCol}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botBRightRow.png}
+	\caption{Bottom B Camera Right Dot, Row\label{fig:botBRightRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{botBRightCol.png}
+	\caption{Bottom B Camera Right Dot, Column\label{fig:botBRightCol}}
+\end{figure}
+
+% Slant Camera Pixels
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{slantLeftRow.png}
+	\caption{Slant Camera Left Dot, Row\label{fig:slantLeftRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{slantLeftCol.png}
+	\caption{Slant Camera Left Dot, Column\label{fig:slantLeftCol}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{slantRightRow.png}
+	\caption{Slant Camera Right Dot, Row\label{fig:slantRightRow}}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=0.9\columnwidth]{slantRightCol.png}
+	\caption{Slant Camera Right Dot, Column\label{fig:slantRightCol}}
+\end{figure}
+
+\section{Discussion}
+
 What conclusions can we draw, specifically: what was as expected, what was not as expected?
 
 \end{multicols}
+
 \end{document} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
