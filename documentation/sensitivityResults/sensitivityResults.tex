@@ -49,7 +49,7 @@
 
 What questions are we trying to answer
 
-The purpose of this analysis was to determine the sensitivity of the image processing software. Specifically, the Find6DOF block was tested in Simulink. This system is given inputs of the pixel locations of each white dot on the body of the BAT and outputs the corresponding roll, pitch, and yaw Euler angles, as well as the center of mass position of the BAT. For the purpose of this analysis, solely the Euler angles were processed. In order to perform an accurate study, each pixel was modified separately and the corresponding change in Euler angle was observed.
+The purpose of this analysis was to determine the sensitivity of the image processing software. Specifically, the Find6DOF block was tested in Simulink. This system is given inputs of the pixel locations of each white dot on the body of the BAT. The outputs of the system are the corresponding roll, pitch, and yaw Euler angles, as well as the center of mass position of the BAT. For the purpose of this analysis, solely the Euler angles were processed. In order to perform an accurate study, each pixel was modified separately and the corresponding change in Euler angle was observed.
 
 \section{Methods}
 
@@ -57,12 +57,13 @@ How did we try to answer them
 
 In the real system, each camera (side, bottom, and slant) captured four pixels location corresponding to the row and column of each pair of dots. The side and slant camera recorded only one pair of dots, while the bottom camera recorded two pairs of dots, denoted the A and B sets. The A set was lined up the x direction in the ground frame while the B set was lined up with the y direction in the ground frame.
 
-In order to observe specific changes with regard to each dot location, each pixels was modified separately and the resulting Euler angles were plotted accordingly. More specifically, the row and column of each dot location were individually modified and plotted in reference to the change in Euler angle. To that end, sixteen separate graphs were plotted   
+In order to observe specific changes with regard to each dot location, each pixels was modified separately and the resulting Euler angles were plotted accordingly. More specifically, the row and column of each dot location were individually modified and plotted in reference to the change in Euler angle. To that end, sixteen separate graphs were plotted corresponding to changes with respect to each individual dot. Each plot describes the change in Euler angle versus the change in pixels. Each dot position was varied by $\pm 5$ pixels.
 
 \section{Results}
 
-Present the results
-For example figure \ref{fig:botALeftCol} shows some stuff.
+Present the results. For example figure \ref{fig:botALeftCol} shows some stuff.
+
+These graphs described how variations in dot location affected the Euler angles calculated by the Find6DOF block in Simulink. The results displayed show that some Euler angles are very sensitive to changes in pixel location 
 
 % Side Camera Pixels
 
