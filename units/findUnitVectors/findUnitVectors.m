@@ -104,6 +104,8 @@ function [rx,ry,rz,error] = findUnitVectors(unitVecCam1,unitVecCam2a,...
 % % z = x cross y
 % rz = cross(rx, ry);
 % 
+
+
 % % error is the dot product of the two
 % error = dot(rx,ry);
 %%
