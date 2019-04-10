@@ -110,11 +110,20 @@ function [rx,ry,rz,error] = findUnitVectors(unitVecCam1,unitVecCam2a,...
 % error = dot(rx,ry);
 %%
 
+% Normalize the unit vector components in terms of the dot separation
+% distance
+
+% Flip sign of unit vectors from side cam (unitVecCam1) because of side
+% cam location on +y axis
 dSB = [-unitVecCam1(1)/sideSep;-unitVecCam1(2)/sideSep;...
     unitVecCam2a(1)/bottomASep;unitVecCam2a(2)/bottomASep];
+
+% Flip sign of unit vectors from bottom cam A (unitVecCam2b) and slant cam
+% (nitVecCam3) because of reverse orientation with ground fixed frame
 dBL = -[unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
     unitVecCam3(1)/bottomBSep;unitVecCam3(2)/bottomBSep];
 
+% Calculate rx and ry vectors
 rx = DSB * dSB;
 ry = DBL * dBL;
 
