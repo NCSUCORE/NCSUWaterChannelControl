@@ -1,4 +1,4 @@
-%% Function to initialize Find Unit Vectors block
+%% Script to initialize Find Unit Vectors block
 
 % Convert from degrees to radians
 sideEulerAngles = sideEulerAngles.*pi/180;
@@ -10,9 +10,14 @@ GFC2Side   = calculateRotationMatrix(sideEulerAngles(1),sideEulerAngles(2),sideE
 GFC2Bottom = calculateRotationMatrix(botEulerAngles(1),botEulerAngles(2),botEulerAngles(3));
 GFC2Slant  = calculateRotationMatrix(slantEulerAngles(1),slantEulerAngles(2),slantEulerAngles(3));
 
+% Initialize ASB as side and bottom rotation matrices (4x3)
 ASB = [GFC2Side(1,:);GFC2Side(2,:);GFC2Bottom(1,:);GFC2Bottom(2,:)];
+
+% Initialize ABL as bottom and slant rotation matrices (4x3)
 ABL = [GFC2Bottom(1,:);GFC2Bottom(2,:);GFC2Slant(1,:);GFC2Slant(2,:)];
 
+% Calculate DSB and DBL by performing left psuedo inverse of respective ASB
+% and ABL matrices (3x4)
 DSB = (ASB'*ASB)\ASB';
 DBL = (ABL'*ABL)\ABL';
 

@@ -1,10 +1,11 @@
+%% Script to initialize Dot Finder block
 
 % Calculate the ROI half width and half height
 ROIHalfDimVec_px = [floor(ROIDimVec_px(1)/2)...
     floor(ROIDimVec_px(2)/2)];
 
-% Set ROIHalfDimVec_px parameter in block mask as determined by above
-% equation
+% Set ROIHalfDimVec_px parameter in DotFinder block mask as determined by 
+% above equation
 set_param(gcb,'ROIHalfDimVec_px',[ '[' num2str(ROIHalfDimVec_px(1)) ' ' num2str(ROIHalfDimVec_px(2)) ']' ])
 
 % Set up the matrix that determines how to split the ROI
@@ -34,6 +35,8 @@ else
     ROISplitDims_px(4,:) = [1 ROIDimVec_px(2)];
 end
 
+% Set ROISplitDims_px parameter in DotFinder block mask as determined by
+% dot orientation
 set_param(gcb,'ROISplitDims_px',[ '['...
     num2str(ROISplitDims_px(1,1)) ' ' num2str(ROISplitDims_px(1,2)) ' ; '...
     num2str(ROISplitDims_px(2,1)) ' ' num2str(ROISplitDims_px(2,2)) ' ; '...

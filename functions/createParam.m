@@ -38,7 +38,7 @@ elseif ischar(value)
     evalin('caller',sprintf('params.%s = Simulink.Parameter([%s]);',name,str));
     evalin('caller',sprintf('params.%s.Max = %s;',name,num2str(max)));
     evalin('caller',sprintf('params.%s.Min = %s;',name,num2str(min)));
-    % Do not use str2double, does not work in this context.
+    % Do not use str2double, does not work in this context
     evalin('caller',sprintf('params.%s.Dimensions = [%s];',name,num2str(size(str2num(str)))));
     evalin('caller',sprintf('params.%s.Description = ''%s'';',name,description));
 else

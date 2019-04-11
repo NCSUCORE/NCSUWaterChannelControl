@@ -1,3 +1,5 @@
+%% Script to initialize find Position block
+
 % Initialize distances as distance from camera to CoM.
 % This is only approximatly correct, but it's sufficient
 side2SideDist_init      = norm(initialCoMPositionVec_cm-sideCameraPositionVec_cm);
@@ -11,9 +13,12 @@ jS = side2GroundRotationMatrix(:,2);
 iA = bot2GroundRotationMatrix(:,1);
 jA = bot2GroundRotationMatrix(:,2);
 
+% Set side camera and bottom camera vectors
 rSG = sideCameraPositionVec_cm;
 rAG = bottomCameraPositionVec_cm;
 
+% Initialize alpha with unit vector components for left pseudo inverse in
+% next step
 alpha = [iS';jS';iA';iA';jA';jA'];
 
 % calculate alphaBar, alpha0, and gamma

@@ -1,4 +1,5 @@
-% Script to initialize controllers
+%% Script to initialize controllers
+
 % This script works by searching the controllers folder, then creating a
 % variant object in the base workspace for each of the found directories.
 basePath = fileparts(which('WaterChannelControl.prj'));
