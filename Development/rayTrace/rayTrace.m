@@ -1,4 +1,4 @@
-function [rBGG,uOut] = ...
+function [rOut,uOut] = ...
     rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
     glassPlane,glassThickness)
 %RAYTRACE Function to trace a ray out from a camera, into the water channel
@@ -11,14 +11,14 @@ function [rBGG,uOut] = ...
 %   fixed coordinate system
 %   dist2Glass - distance in cm along the camera z axis, from the front of
 %   the lens to the glass
-%   phi - rotation about camera x that describes the orientation of the
-%   camera relative to the glass (rotation order is x then y)
-%   theta - rotation about camera y that describes the orientation of the
-%   camera relative to the glass (rotation order is x then y)
 %   gammaH - rotation about camera x that describes the orientation of the
 %   desired sight line (rotation order is x then y)
 %   gammaV - rotation about camera Y that describes the orientation of the
 %   desired sight line (rotation order is x then y)
+%   indOfRef - 3 element vector containing the indices of refraction [air,
+%   glass, water]
+%   glassPlane - string 'xy' or 'xz' describing the plane that the glas
+%   liew in
 %   OUTPUTS:
 %   point - 3 element column vector describing the point where the sight
 %   line emerges from the glass and enters the water, in ground fixed
@@ -45,7 +45,7 @@ Rxgammah = calculateRotationMatrix(gammaH   ,0          ,0);
 
 uACC = Rygammav*Rxgammah*uCGCC;
 
-rACC = ((rCGCC'*ngC)/(uACC'*ngC))*Rygammav*Rxgammah*rCGCC;
+rACC = ((rCGCC'*ngC)/(uACC'*ngC))*Rygammav*Rxgammah*uCGCC;
 
 %% Step 2: Bend with Snells law
 uBAC = snellsLaw3D(uACC,ngC,indOfRef(1),indOfRef(2)); % Direction
@@ -55,8 +55,10 @@ rBAC = -glassThickness*uBAC/dot(uBAC,ngC); % Scale to get correct magnitude
 uOut = snellsLaw3D(uBAC,ngC,indOfRef(2),indOfRef(3));
 
 %% Step 4: Output in absolute ground coordinates
+
+uOut = grnd2CamRotMat'*uOut;
 rBCC = rBAC + rACC; % Exit point relative to cam origin
-rBGG = camPosVec + grnd2CamRotMat'*rBCC; % rotate back to ground coordinates
+rOut = camPosVec + grnd2CamRotMat'*rBCC; % rotate back to ground coordinates
 
 end
 
