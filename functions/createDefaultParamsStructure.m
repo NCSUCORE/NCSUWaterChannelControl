@@ -1,4 +1,5 @@
 function createDefaultParamsStructure()
+
 % This function creates the params structure in the base workspace and then
 % saves it to paramsData/params.mat
 
@@ -140,6 +141,7 @@ createParam('sideMinDelay_s',2,0,5,...
     'Side minimum delay between request intervals','s');
 
 %% MODEL 4 PARAMETERS
+% CAMERA PARAMETERS
 createParam('roiBotAHldPos_px',[580 1060],0,2048,...
     'Default image [row col] coordinates of ROI for bottom A camera.','px')
 createParam('roiBotBHldPos_px',[450 1050],0,2048,...
@@ -170,6 +172,7 @@ createParam('bottomMinDelay_s',2.5,0,5,...
     'Bottom minimum delay between request intervals','s');
 
 %% MODEL 5 PARAMETERS
+% CAMERA PARAMETERS
 createParam('roiSlntHldPos_px',[560 1050],0,2048,...
     'Default image [row col] coordinates of ROI for slant camera.','px')
 createParam('roiSlntSize_px',[60 150],0,500,...
@@ -199,8 +202,11 @@ paramsDir = what('paramsData');
 % evalin('base',['save(''' paramsDir.path filesep 'params.mat'',''params'');'])
 save([ paramsDir.path filesep 'params.mat'],'-struct','params');
 
+% Open dictionary and migrate to section
 myDictionaryObj = Simulink.data.dictionary.open('paramsDataDictionary.sldd');
 dDataSectObj = getSection(myDictionaryObj,'Design Data');
+
+% Overwrite current data dictionary values given params mat file
 importFromFile(dDataSectObj,'params.mat','existingVarsAction','overwrite');
 
 end

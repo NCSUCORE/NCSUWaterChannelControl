@@ -1,17 +1,16 @@
 function limit = findLimits(parameterName)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
 
-dict = Simulink.data.dictionary.open('paramsDataDictionary.sldd');
-sect = getSection(dict,'Design Data');
-val = getValue(getEntry(sect,parameterName));
+% This function returns the limits of the parameter defined in dictionary
+% Input of paraeterName used to navigate to location in data dictionary
 
-% varName = sprintf('params.(''%s'')', parameterName);
-% var = evalin('base',varName);
+% Call getVariable function to Simulink parameter in dictionary
+[variable, ~] = getVariable(parameterName);
 
-max = val.Max;
-min = val.Min;
+% Set min and max based on variable min and max values
+min = variable.Min;
+max = variable.Max;
 
+% Store min and max values as limit vector
 limit = [min max];
 
 end

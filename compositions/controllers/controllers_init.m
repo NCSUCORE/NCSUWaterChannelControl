@@ -20,4 +20,5 @@ for ii = 1:length(files)
     end
 end
 
+% Clear created variables
 clearvars ii basePath files

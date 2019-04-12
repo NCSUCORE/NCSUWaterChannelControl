@@ -1,10 +1,11 @@
 function ipAddress_init(blockPath,systemPath)
 
-%ipAddress_init Function is used to update IP address list
-%   Receives path to block and overall system in order to re-initialize IP
-%   address list known by IEEE 1588 Real-Time UDP block
-%   This function is necessary for proper propogation when using UDP 
-%   communication in unit library
+% This function is used to update IP address list
+% Receives path to block and overall system in order to re-initialize IP
+% address list known by IEEE 1588 Real-Time UDP block
+
+% This function is necessary for proper propogation when using UDP 
+% communication in unit library
 
 % Open system (imageUDPNode)
 open_system(systemPath,'force') % 'force' option looks under block mask

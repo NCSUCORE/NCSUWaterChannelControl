@@ -8,10 +8,9 @@ function [side2SideDist_cm,bot2BotADist_cm,...
     bottomCameraPositionVec_cm,slantCameraPositionVec_cm,...
     alphaBar,alpha0,gamma,imageDims,cameraFOVAngle_deg)
 
-%FINDPOSITION function is used to calculate center of mass position vectors
-%   Function returns center of mass position vector of body in ground
-%   frame, as well as distance from each camera to the centroid of each 
-%   respective dot set
+% This function is used to calculate center of mass position vectors
+% Returns center of mass position vector of body in ground frame, as well 
+% as distance from each camera to the centroid of each respective dot set
 
 % Vectors that point from the CoM to the dots represented in the ground frame
 side2CoMInGFVec_cm = body2GroundRotationMatrix*sideDotPositionVec_cm;
