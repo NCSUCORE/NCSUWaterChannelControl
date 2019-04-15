@@ -1,4 +1,4 @@
-function [rx,ry,rz,error] = findUnitVectors(unitVecCam1,unitVecCam2a,...
+function [rx,ry,rz,error,rxRaw,ryRaw] = findUnitVectors(unitVecCam1,unitVecCam2a,...
     unitVecCam2b,unitVecCam3,sideSep,bottomASep,bottomBSep,DSB,DBL)
 %#codegen
 
@@ -26,6 +26,10 @@ dBL = -[unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
 % Calculate rx and ry vectors
 rx = DSB * dSB;
 ry = DBL * dBL;
+
+% Raw values pre-normalization used for testing
+rxRaw = rx;
+ryRaw = ry;
 
 % Calculate magnitudes of vectors
 rxMag = sqrt((rx(1))^2+(rx(2))^2+(rx(3))^2);

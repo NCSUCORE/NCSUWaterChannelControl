@@ -29,6 +29,6 @@ set_param(recv_path,'ipAddress',correctIP);
 close_system(systemPath);
 
 % Update diagram of system to propogate changes
-set_param(systemPath,'SimulationCommand','Update');
+set_param(gcs,'SimulationCommand','Update');
 
 end
