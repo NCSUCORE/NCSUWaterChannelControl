@@ -7,9 +7,9 @@ function createDefaultParamsStructure()
 
 % Note that the params structure doesn't contain anything that maps to a
 % check box on mask parameters because I don't know how to do that
-% Create global variable in base workspace
 
-% evalin('base','global params')
+% Create global variable in base workspace
+evalin('base','global params')
 
 %% MODEL 2 PARAMETERS
 % CONTROLLER PARAMETERS
@@ -199,7 +199,7 @@ createParam('slantMinDelay_s',2.25,0,5,...
 paramsDir = what('paramsData');
 
 % Save params to params.mat file
-% evalin('base',['save(''' paramsDir.path filesep 'params.mat'',''params'');'])
+evalin('base',['save(''' paramsDir.path filesep 'params.mat'',''params'');'])
 save([ paramsDir.path filesep 'params.mat'],'-struct','params');
 
 % Open dictionary and migrate to section

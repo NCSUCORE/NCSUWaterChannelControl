@@ -3,15 +3,16 @@
 
 % Please do not move this file
 
+% Open the simulink project file
+fprintf('\nOpening simulink project WaterChannelControl.prj\n\n')
+simulinkproject(fullfile(baseDir,'WaterChannelControl.prj'))
+
 % Set working directory to output
 fprintf('\nSetting working directory to output\n')
 baseDir = fileparts(which(mfilename)); % Get the path to the highest level of the project
 cd(fullfile(baseDir,'output')) % Set the working directory
 
-% Open the simulink project file
-fprintf('\nOpening simulink project WaterChannelControl.prj\n\n')
-simulinkproject(fullfile(baseDir,'WaterChannelControl.prj'))
-
+% Start timer for execution timeout if build not selected
 t = timer('ExecutionMode', 'singleShot', 'StartDelay', 10, 'TimerFcn', @pressEnter);
 start(t);
 fprintf('\n*******************************')
@@ -30,6 +31,9 @@ if strcmpi(answer,'y')
     % Load parameters structure into base workspace
     fprintf('\nLoading params struct\n')
 %     loadParams
+
+    % Initialize controllers
+    controllers_init
     
     fprintf('\nOpening all models\n')
     % Window positions determined from using get_param(gcs,'location')
@@ -54,7 +58,7 @@ if strcmpi(answer,'y')
             % Build models:
             try
                 fprintf('\nBuilding model%d_cm.slx\n',ii)
-%                 eval(sprintf('model%d_cm([], [], [], ''compile'')',ii));
+                rtwbuild(sprintf('model%d_cm',ii));
                 % Sometimes the above line results in a bug that locks the
                 % models from editing etc.  To break out of this use: model2_cm([], [], [], 'term')
                 % You may need to run that multiple times to get it to work.
@@ -64,7 +68,7 @@ if strcmpi(answer,'y')
             % Connect to targets:
             try
                 fprintf('\nConnecting to target machine %d\n',ii)
-%                 set_param(sprintf('model%d_cm',ii),'SimulationCommand','connect');
+                set_param(sprintf('model%d_cm',ii),'SimulationCommand','connect');
             catch errMsg
                 rethrow(errMsg)
             end
@@ -77,11 +81,10 @@ if strcmpi(answer,'y')
     % Put code to build models and connect here.
     fprintf('\nConnecting to targets\n')
     % Check for target first probably ought to use some kind of try/catch
-    % Add code to open GUI once we build it.
 end
 
-% Initialize controllers
-controllers_init
+% Open Water Channel Config GUI
+waterChannelConfigGUI
 
 fprintf('\nDone\n')
 
