@@ -6,40 +6,69 @@ function [side2SideDist_cm,bot2BotADist_cm,...
     sideDotPositionVec_cm,bottomDotAPositionVec_cm,...
     bottomDotBPositionVec_cm,sideCameraPositionVec_cm,...
     bottomCameraPositionVec_cm,slantCameraPositionVec_cm,...
-    alphaBar,alpha0,gamma,imageDims,cameraFOVAngle_deg)
+    alphaBar,alpha0,gamma,imageDims,cameraFOVAngle_deg,...
+    side2GroundRotationMatrix,bot2GroundRotationMatrix,slant2GroundRotationMatrix)
 
 % This function is used to calculate center of mass position vectors
 % Returns center of mass position vector of body in ground frame, as well 
 % as distance from each camera to the centroid of each respective dot set
 
 % Vectors that point from the CoM to the dots represented in the ground frame
-side2CoMInGFVec_cm = body2GroundRotationMatrix*sideDotPositionVec_cm;
-botA2CoMInGFVec_cm = body2GroundRotationMatrix*bottomDotAPositionVec_cm;
-botB2ComInGFVec_cm = body2GroundRotationMatrix*bottomDotBPositionVec_cm;
+CoM2SideGFVec_cm = body2GroundRotationMatrix*sideDotPositionVec_cm;
+CoM2BotAGFVec_cm = body2GroundRotationMatrix*bottomDotAPositionVec_cm;
+CoM2BotBGFVec_cm = body2GroundRotationMatrix*bottomDotBPositionVec_cm;
 
-% Calculate distance from camera to specific dot centroid
-side2SideDist_cm  = norm(sideCameraPositionVec_cm - (lastCoMPositionVec_cm + side2CoMInGFVec_cm));
-bot2BotADist_cm   = norm(bottomCameraPositionVec_cm - (lastCoMPositionVec_cm + botA2CoMInGFVec_cm));
-bot2BotBDist_cm   = norm(bottomCameraPositionVec_cm - (lastCoMPositionVec_cm + botB2ComInGFVec_cm));
-slant2BotBDist_cm = norm(slantCameraPositionVec_cm - (lastCoMPositionVec_cm + botB2ComInGFVec_cm));
+% Vectors that point from camera to dot centroid in the ground frame
+side2SideDotVecGF = sideCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2SideGFVec_cm);
+bot2BotADotVecGF = bottomCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2BotAGFVec_cm);
+bot2BotBDotVecGF = bottomCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2BotBGFVec_cm);
+slant2BotBDotVecGF = slantCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2BotBGFVec_cm);
+
+% Vectors that point from camera to dot centroid in the camera frame
+side2SideDotVecCF = side2GroundRotationMatrix'*side2SideDotVecGF;
+bot2BotADotVecCF = bot2GroundRotationMatrix'*bot2BotADotVecGF;
+bot2BotBDotVecCF = bot2GroundRotationMatrix'*bot2BotBDotVecGF;
+slant2BotBDotVecCF = slant2GroundRotationMatrix'*slant2BotBDotVecGF;
+
+% Calculate horizontal and vertical distance from side camera to side dot centroid in camera frame 
+side2SideDistHoriz_cm = norm([side2SideDotVecCF(2) side2SideDotVecCF(3)]);
+side2SideDistVert_cm = norm([side2SideDotVecCF(1) side2SideDotVecCF(3)]);
+
+% Calculate horizontal and vertical distance from bottom camera to bottom A dot centroid in camera frame 
+bot2BotADistHoriz_cm = norm([bot2BotADotVecCF(2) bot2BotADotVecCF(3)]);
+bot2BotADistVert_cm = norm([bot2BotADotVecCF(1) bot2BotADotVecCF(3)]);
+
+% Calculate horizontal and vertical distance from bottom camera to bottom B dot centroid in camera frame 
+bot2BotBDistHoriz_cm = norm([bot2BotBDotVecCF(2) bot2BotBDotVecCF(3)]);
+bot2BotBDistVert_cm = norm([bot2BotBDotVecCF(1) bot2BotBDotVecCF(3)]);
+
+% Calculate horizontal and vertical distance from slant camera to bottom B dot centroid in camera frame
+% Not used due to inconsistencies caused by Snell's law
+slant2BotBDistHoriz_cm = norm([slant2BotBDotVecCF(2) slant2BotBDotVecCF(3)]);
+slant2BotBDistVert_cm = norm([slant2BotBDotVecCF(1) slant2BotBDotVecCF(3)]);
 
 % Find position of side dots in camera frame from side camera
 sidePosVecCamFrame_cm = zeros(2,1);
-sidePosVecCamFrame_cm(1) = (2*side2SideDist_cm/imageDims(1))*(sideDotImageCoords(1) - imageDims(1)/2)*tand(cameraFOVAngle_deg(1));
-sidePosVecCamFrame_cm(2) = (2*side2SideDist_cm/imageDims(2))*(sideDotImageCoords(2) - imageDims(2)/2)*tand(cameraFOVAngle_deg(2));
+sidePosVecCamFrame_cm(1) = (2*side2SideDistHoriz_cm/imageDims(1))*(sideDotImageCoords(1) - imageDims(1)/2)*...
+    tand(cameraFOVAngle_deg(1))*cosd((sideDotImageCoords(1) - imageDims(1)/2)/(imageDims(1)/2)*cameraFOVAngle_deg(1));
+sidePosVecCamFrame_cm(2) = (2*side2SideDistVert_cm/imageDims(2))*(sideDotImageCoords(2) - imageDims(2)/2)*...
+    tand(cameraFOVAngle_deg(2))*cosd((sideDotImageCoords(2) - imageDims(2)/2)/(imageDims(2)/2)*cameraFOVAngle_deg(2));
 
 % Find position of bottom dots A in camera frame from bottom camera
 botAPosVecCamFrame_cm = zeros(2,1);
-botAPosVecCamFrame_cm(1) = (2*bot2BotADist_cm/imageDims(1))*(bottomADotImageCoords(1) - imageDims(1)/2)*tand(cameraFOVAngle_deg(1));
-botAPosVecCamFrame_cm(2) = (2*bot2BotADist_cm/imageDims(2))*(bottomADotImageCoords(2) - imageDims(2)/2)*tand(cameraFOVAngle_deg(2));
+botAPosVecCamFrame_cm(1) = (2*bot2BotADistHoriz_cm/imageDims(1))*(bottomADotImageCoords(1) - imageDims(1)/2)*...
+    tand(cameraFOVAngle_deg(1))*cosd((bottomADotImageCoords(1) - imageDims(1)/2)/(imageDims(1)/2)*cameraFOVAngle_deg(1));
+botAPosVecCamFrame_cm(2) = (2*bot2BotADistVert_cm/imageDims(2))*(bottomADotImageCoords(2) - imageDims(2)/2)*...
+    tand(cameraFOVAngle_deg(2))*cosd((bottomADotImageCoords(2) - imageDims(2)/2)/(imageDims(2)/2)*cameraFOVAngle_deg(2));
 
 % Find position of bottom dots B in camera frame from bottom camera
 botBPosVecCamFrame_cm = zeros(2,1);
-botBPosVecCamFrame_cm(1) = (2*bot2BotBDist_cm/imageDims(1))*(bottomBDotImageCoords(1) - imageDims(1)/2)*tand(cameraFOVAngle_deg(1));
-botBPosVecCamFrame_cm(2) = (2*bot2BotBDist_cm/imageDims(2))*(bottomBDotImageCoords(2) - imageDims(2)/2)*tand(cameraFOVAngle_deg(2));
+botBPosVecCamFrame_cm(1) = (2*bot2BotBDistHoriz_cm/imageDims(1))*(bottomBDotImageCoords(1) - imageDims(1)/2)*...
+    tand(cameraFOVAngle_deg(1))*cosd((bottomBDotImageCoords(1) - imageDims(1)/2)/(imageDims(1)/2)*cameraFOVAngle_deg(1));
+botBPosVecCamFrame_cm(2) = (2*bot2BotBDistVert_cm/imageDims(2))*(bottomBDotImageCoords(2) - imageDims(2)/2)*...
+    tand(cameraFOVAngle_deg(2))*cosd((bottomBDotImageCoords(2) - imageDims(2)/2)/(imageDims(2)/2)*cameraFOVAngle_deg(2));
 
-% Initialize Delta with position vectors from each camera as represented in
-% the camera frame
+% Initialize Delta with position vectors from each camera as represented in the camera frame
 Delta = [sidePosVecCamFrame_cm(1);... % a
     sidePosVecCamFrame_cm(2);... % b
     botAPosVecCamFrame_cm(1);... % c
@@ -47,22 +76,16 @@ Delta = [sidePosVecCamFrame_cm(1);... % a
     botAPosVecCamFrame_cm(2);... % e
     botBPosVecCamFrame_cm(2)]; % f
 
-% Calculate side, bottom A, and bottom B vectors as represented in the
-% ground frame (camera to body) 
-rDB = body2GroundRotationMatrix * sideDotPositionVec_cm;
-rEB = body2GroundRotationMatrix * bottomDotAPositionVec_cm;
-rFB = body2GroundRotationMatrix * bottomDotBPositionVec_cm;
-
 % Initialize beta in terms of camera position vectors
-beta = [rDB;rDB;rEB;rFB;rEB;rFB];
+beta = [CoM2SideGFVec_cm;CoM2SideGFVec_cm;CoM2BotAGFVec_cm;CoM2BotBGFVec_cm;CoM2BotAGFVec_cm;CoM2BotBGFVec_cm];
 
 % Calculate center of mass position vector and normalize each distance from
 % camera to respective dot set centroid
 CoMPositionVec_cm = alphaBar*(Delta+alpha0*(gamma-beta));
-side2SideDist_cm  = norm(CoMPositionVec_cm + rDB - sideCameraPositionVec_cm);
-bot2BotADist_cm   = norm(CoMPositionVec_cm + rEB - bottomCameraPositionVec_cm);
-bot2BotBDist_cm   = norm(CoMPositionVec_cm + rFB - bottomCameraPositionVec_cm);
-slant2BotBDist_cm = norm(CoMPositionVec_cm + rFB - slantCameraPositionVec_cm);
+side2SideDist_cm  = norm(CoMPositionVec_cm + CoM2SideGFVec_cm - sideCameraPositionVec_cm);
+bot2BotADist_cm   = norm(CoMPositionVec_cm + CoM2BotAGFVec_cm - bottomCameraPositionVec_cm);
+bot2BotBDist_cm   = norm(CoMPositionVec_cm + CoM2BotBGFVec_cm - bottomCameraPositionVec_cm);
+slant2BotBDist_cm = norm(CoMPositionVec_cm + CoM2BotBGFVec_cm - slantCameraPositionVec_cm);
 
 end
 

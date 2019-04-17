@@ -3,13 +3,15 @@
 
 % Please do not move this file
 
+% Get the path to the highest level of the project
+baseDir = fileparts(which(mfilename));
+
 % Open the simulink project file
 fprintf('\nOpening simulink project WaterChannelControl.prj\n\n')
 simulinkproject(fullfile(baseDir,'WaterChannelControl.prj'))
 
 % Set working directory to output
 fprintf('\nSetting working directory to output\n')
-baseDir = fileparts(which(mfilename)); % Get the path to the highest level of the project
 cd(fullfile(baseDir,'output')) % Set the working directory
 
 % Start timer for execution timeout if build not selected
@@ -85,6 +87,9 @@ end
 
 % Open Water Channel Config GUI
 waterChannelConfigGUI
+
+% Open Simulink Real-Time Explorer
+slrtexplr
 
 fprintf('\nDone\n')
 
