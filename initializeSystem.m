@@ -83,13 +83,13 @@ if strcmpi(answer,'y')
     % Put code to build models and connect here.
     fprintf('\nConnecting to targets\n')
     % Check for target first probably ought to use some kind of try/catch
+    
+    % Open Water Channel Config GUI
+    waterChannelConfigGUI
+
+    % Open Simulink Real-Time Explorer
+    slrtexplr
 end
-
-% Open Water Channel Config GUI
-waterChannelConfigGUI
-
-% Open Simulink Real-Time Explorer
-slrtexplr
 
 fprintf('\nDone\n')
 

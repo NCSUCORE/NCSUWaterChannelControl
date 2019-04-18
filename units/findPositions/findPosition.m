@@ -18,11 +18,11 @@ CoM2SideGFVec_cm = body2GroundRotationMatrix*sideDotPositionVec_cm;
 CoM2BotAGFVec_cm = body2GroundRotationMatrix*bottomDotAPositionVec_cm;
 CoM2BotBGFVec_cm = body2GroundRotationMatrix*bottomDotBPositionVec_cm;
 
-% Vectors that point from camera to dot centroid in the ground frame
-side2SideDotVecGF = sideCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2SideGFVec_cm);
-bot2BotADotVecGF = bottomCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2BotAGFVec_cm);
-bot2BotBDotVecGF = bottomCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2BotBGFVec_cm);
-slant2BotBDotVecGF = slantCameraPositionVec_cm - (lastCoMPositionVec_cm + CoM2BotBGFVec_cm);
+% Vectors that point from dot centroid to camera in the ground frame
+side2SideDotVecGF = (lastCoMPositionVec_cm + CoM2SideGFVec_cm) - sideCameraPositionVec_cm;
+bot2BotADotVecGF = (lastCoMPositionVec_cm + CoM2BotAGFVec_cm) - bottomCameraPositionVec_cm;
+bot2BotBDotVecGF = (lastCoMPositionVec_cm + CoM2BotBGFVec_cm) - bottomCameraPositionVec_cm;
+slant2BotBDotVecGF = (lastCoMPositionVec_cm + CoM2BotBGFVec_cm) - slantCameraPositionVec_cm;
 
 % Vectors that point from camera to dot centroid in the camera frame
 side2SideDotVecCF = side2GroundRotationMatrix'*side2SideDotVecGF;
@@ -50,23 +50,23 @@ slant2BotBDistVert_cm = norm([slant2BotBDotVecCF(1) slant2BotBDotVecCF(3)]);
 % Find position of side dots in camera frame from side camera
 sidePosVecCamFrame_cm = zeros(2,1);
 sidePosVecCamFrame_cm(1) = (2*side2SideDistHoriz_cm/imageDims(1))*(sideDotImageCoords(1) - imageDims(1)/2)*...
-    tand(cameraFOVAngle_deg(1))*cosd((sideDotImageCoords(1) - imageDims(1)/2)/(imageDims(1)/2)*cameraFOVAngle_deg(1));
+    tand(cameraFOVAngle_deg(1))*cosd(atand((2*(sideDotImageCoords(1) - imageDims(1)/2))/(imageDims(1)/2)*tan(cameraFOVAngle_deg(1))));
 sidePosVecCamFrame_cm(2) = (2*side2SideDistVert_cm/imageDims(2))*(sideDotImageCoords(2) - imageDims(2)/2)*...
-    tand(cameraFOVAngle_deg(2))*cosd((sideDotImageCoords(2) - imageDims(2)/2)/(imageDims(2)/2)*cameraFOVAngle_deg(2));
+    tand(cameraFOVAngle_deg(2))*cosd(atand((2*(sideDotImageCoords(2) - imageDims(2)/2))/(imageDims(2)/2)*tan(cameraFOVAngle_deg(2))));
 
 % Find position of bottom dots A in camera frame from bottom camera
 botAPosVecCamFrame_cm = zeros(2,1);
 botAPosVecCamFrame_cm(1) = (2*bot2BotADistHoriz_cm/imageDims(1))*(bottomADotImageCoords(1) - imageDims(1)/2)*...
-    tand(cameraFOVAngle_deg(1))*cosd((bottomADotImageCoords(1) - imageDims(1)/2)/(imageDims(1)/2)*cameraFOVAngle_deg(1));
+    tand(cameraFOVAngle_deg(1))*cosd(atand((2*(bottomADotImageCoords(1) - imageDims(1)/2))/(imageDims(1)/2)*tan(cameraFOVAngle_deg(1))));
 botAPosVecCamFrame_cm(2) = (2*bot2BotADistVert_cm/imageDims(2))*(bottomADotImageCoords(2) - imageDims(2)/2)*...
-    tand(cameraFOVAngle_deg(2))*cosd((bottomADotImageCoords(2) - imageDims(2)/2)/(imageDims(2)/2)*cameraFOVAngle_deg(2));
+    tand(cameraFOVAngle_deg(2))*cosd(atand((2*(bottomADotImageCoords(2) - imageDims(2)/2))/(imageDims(2)/2)*tan(cameraFOVAngle_deg(2))));
 
 % Find position of bottom dots B in camera frame from bottom camera
 botBPosVecCamFrame_cm = zeros(2,1);
 botBPosVecCamFrame_cm(1) = (2*bot2BotBDistHoriz_cm/imageDims(1))*(bottomBDotImageCoords(1) - imageDims(1)/2)*...
-    tand(cameraFOVAngle_deg(1))*cosd((bottomBDotImageCoords(1) - imageDims(1)/2)/(imageDims(1)/2)*cameraFOVAngle_deg(1));
+    tand(cameraFOVAngle_deg(1))*cosd(atand((2*(bottomBDotImageCoords(1) - imageDims(1)/2))/(imageDims(1)/2)*tan(cameraFOVAngle_deg(1))));
 botBPosVecCamFrame_cm(2) = (2*bot2BotBDistVert_cm/imageDims(2))*(bottomBDotImageCoords(2) - imageDims(2)/2)*...
-    tand(cameraFOVAngle_deg(2))*cosd((bottomBDotImageCoords(2) - imageDims(2)/2)/(imageDims(2)/2)*cameraFOVAngle_deg(2));
+    tand(cameraFOVAngle_deg(2))*cosd(atand((2*(bottomBDotImageCoords(2) - imageDims(2)/2))/(imageDims(2)/2)*tan(cameraFOVAngle_deg(2))));
 
 % Initialize Delta with position vectors from each camera as represented in the camera frame
 Delta = [sidePosVecCamFrame_cm(1);... % a
