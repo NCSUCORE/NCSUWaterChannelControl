@@ -4,7 +4,7 @@ function R = calculateRotationMatrix(roll,pitch,yaw)
 % notebook rotationMatrix.nb located in the documentation folder.
 
 % This rotation matrix rotates vectors from ground coordinate system to
-% body coordinate system
+% body/camera coordinate system
 
 % Yaw part of rotation matrix
 Ryaw = [...

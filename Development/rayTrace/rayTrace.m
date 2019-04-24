@@ -59,7 +59,9 @@ uocC = [-tan(gammaV) tan(gammaH) -1]';
 uocC = uocC./norm(uocC);
 
 % vector from c to o in C
-rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
+rocC = linePlaneIntersect(uocC,nC,rmcC);
+
+% rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
 
 %% Step 2: Bend with Snells law
 uioC = snellsLaw3D(uocC,nC,indOfRef(1),indOfRef(2)); % Direction
