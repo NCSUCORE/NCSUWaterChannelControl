@@ -1,5 +1,4 @@
 % Test script 1: slant camera
-
 clear
 % close all
 clc

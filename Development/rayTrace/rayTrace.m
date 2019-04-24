@@ -59,7 +59,8 @@ uocC = [-tan(gammaV) tan(gammaH) -1]';
 uocC = uocC./norm(uocC);
 
 % vector from c to o in C
-rocC = linePlaneIntersect(uocC,nC,rmcC);
+% rocC = linePlaneIntersect(uocC,nC,rmcC);
+[rocC,~] = linePlaneIntersect(uocC,[0 0 0]',rmcC,[0 0 0]',nC);
 
 % rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
 
