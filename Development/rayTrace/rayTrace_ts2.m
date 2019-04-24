@@ -1,17 +1,17 @@
-% Test script 1: slant camera
+% Test script 2: side camera
 
 clear
 % close all
 clc
 
 % Start by testing this (plot the same thing from the diagram)
-camPosVec   = [-100 0 -5]';
-rolls   = [0  ]*pi/180;
-pitches = [135]*pi/180;
-yaws    = [180]*pi/180;
+camPosVec   = [-1 -50 30]';
+rolls   = [0 ]*pi/180;
+pitches = [90]*pi/180;
+yaws    = [90]*pi/180;
 glassThickness = 2;
 dist2Glass     = 5;
-glassPlane     = 'xy';
+glassPlane     = 'xz';
 indOfRef       = [1.000293,1.52,1.333];
 
 gammaH     = [-40:5:40]'*pi/180;
@@ -21,7 +21,7 @@ gamma      = [...
     gammaH(end)*ones(size(gammaV)) gammaV;...
     flip(gammaH)                   gammaV(end)*ones(size(gammaH));...
     gammaH(1)*ones(size(gammaV))   flip(gammaV)];
-
+plot(gamma(:,1),gamma(:,2),'Color','r','LineWidth',2)
 colors ={[0 0 1],[1 0 0]};
 for kk = 1:length(rolls)
     roll  = rolls(kk);
@@ -29,7 +29,7 @@ for kk = 1:length(rolls)
     yaw   = yaws(kk);
     grnd2CamRotMat = calculateRotationMatrix(roll,pitch,yaw);
     RogG = [];
-    RigG =[];
+    RigG = [];
     for ii = 1:length(gamma)
             [rogG,rigG,uiG] = ...
                 rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,...

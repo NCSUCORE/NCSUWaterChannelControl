@@ -1,4 +1,4 @@
-function [rOut,uOut] = ...
+function [rogG,rigG,uiG] = ...
     rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
     glassPlane,glassThickness)
 %RAYTRACE Function to trace a ray out from a camera, into the water channel
@@ -19,46 +19,58 @@ function [rOut,uOut] = ...
 %   glass, water]
 %   glassPlane - string 'xy' or 'xz' describing the plane that the glas
 %   liew in
+%   Important points in this geometry (lower case):
+%   o: point where the ray in question hits the outside of the glass
+%   i: point where the ray emerges on the inside of the glass
+%   m: point where midline of camera (z axis) intersects the glass
+%   g: origin of ground fixed coordinate system
+%   c: origin of camera fixed coordinate system
+%   Coordinate systems (upper case):
+%   G: Tunnel-fixed coordinate system (aka ground-fixed coordinate system)
+%   C: video camera coordinate system
+%   Naming convention:
+%   leading r denotes position vector, leading u denotes unit vector
+%   next three letters are in the order
+%   [point at tip of vector][point at base of vector][coordinate system]
+%   ex: ucgG is the camera position vector in the ground frame
 %   OUTPUTS:
-%   point - 3 element column vector describing the point where the sight
-%   line emerges from the glass and enters the water, in ground fixed
-%   coordinates
-%   direction - 3 element unit vector describing the direction of travel of
-%   the sight line within the water channel
+%   rogG - vector from the ground origin to the point where the ray enters
+%   the glass, from the air, in the ground frame
+%   rigG - vector from the ground origin to the point where the ray exits 
+%   the glass and enters the water, in the ground frame 
+%   uiG - unit vector pointing into the water parallel to the direction of
+%   travel of the ray.
 
 %% Step 1: Get position of point where ray enters glass
 % unit vector normal to glass pointing out, in ground frame
 switch lower(glassPlane)
     case 'xy'
-        ngG = [0 0 -1]';
+        nG = [0 0 -1]';
     case 'xz'
-        ngG = [0 1 0]';
+        nG = [0 1 0]';
 end
+% rotate into cam frame
+nC    = grnd2CamRotMat*nG; % unit vector normal to glass pointing out, in camera frame
+umcC  = [0 0 -1]';         % unit vector pointing at m from c in C frame
+rmcC  = dist2Glass*umcC;   % vector pointing at CG from C, in C frame
 
-ngC = grnd2CamRotMat*ngG;   % unit vector normal to glass pointing out, in camera frame
+% unit vector pointing from c to o in C frame
+uocC = [-tan(gammaV) tan(gammaH) -1]';
+uocC = uocC./norm(uocC);
 
-uCGCC = [0 0 -1]';          % unit vector pointing at CG from C, in C frame
-rCGCC = dist2Glass*uCGCC;   % vector pointing at CG from C, in C frame
-
-Rygammav = calculateRotationMatrix(0        ,gammaV     ,0);
-Rxgammah = calculateRotationMatrix(gammaH   ,0          ,0);
-
-uACC = Rygammav*Rxgammah*uCGCC;
-
-rACC = ((rCGCC'*ngC)/(uACC'*ngC))*Rygammav*Rxgammah*uCGCC;
+% vector from c to o in C
+rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
 
 %% Step 2: Bend with Snells law
-uBAC = snellsLaw3D(uACC,ngC,indOfRef(1),indOfRef(2)); % Direction
-rBAC = -glassThickness*uBAC/dot(uBAC,ngC); % Scale to get correct magnitude
+uioC = snellsLaw3D(uocC,nC,indOfRef(1),indOfRef(2)); % Direction
+rioC = -glassThickness*uioC/dot(uioC,nC); % Scale to get correct magnitude
 
 %% Step 3: Exit glass, get direction from Snells law
-uOut = snellsLaw3D(uBAC,ngC,indOfRef(2),indOfRef(3));
+uiC = snellsLaw3D(uioC,nC,indOfRef(2),indOfRef(3));
 
 %% Step 4: Output in absolute ground coordinates
-
-uOut = grnd2CamRotMat'*uOut;
-rBCC = rBAC + rACC; % Exit point relative to cam origin
-rOut = camPosVec + grnd2CamRotMat'*rBCC; % rotate back to ground coordinates
-
+rogG = camPosVec + grnd2CamRotMat'*rocC;
+rigG = rogG      + grnd2CamRotMat'*rioC;
+uiG  = grnd2CamRotMat'*uiC;
 end
 
