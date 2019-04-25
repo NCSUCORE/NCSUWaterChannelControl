@@ -43,11 +43,14 @@ function [rogG,rigG,uiG] = ...
 
 %% Step 1: Get position of point where ray enters glass
 % unit vector normal to glass pointing out, in ground frame
-switch lower(glassPlane)
-    case 'xy'
+
+switch glassPlane
+    case 1 % xy plane
         nG = [0 0 -1]';
-    case 'xz'
+    case 2 % xz plane
         nG = [0 1 0]';
+    otherwise
+        nG = [0 0 -1]';
 end
 % rotate into cam frame
 nC    = grnd2CamRotMat*nG; % unit vector normal to glass pointing out, in camera frame
