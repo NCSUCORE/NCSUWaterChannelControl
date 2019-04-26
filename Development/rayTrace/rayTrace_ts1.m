@@ -4,35 +4,29 @@ clear
 clc
 
 % Start by testing this (plot the same thing from the diagram)
-camPosVec   = [-100 0 -5]';
-rolls   = [0  ]*pi/180;
-pitches = [135]*pi/180;
-yaws    = [180]*pi/180;
-glassThickness = 2;
-dist2Glass     = 5;
+camPosVec_cm   = [-100 0 -5]';
+roll_rad   = [0  ]*pi/180;
+pitch_rad = [135]*pi/180;
+yaw_rad    = [180]*pi/180;
+glassThickness_cm = 2;
+dist2Glass_cm     = 5;
 glassPlane     = 'xy';
-indOfRef       = [1.000293,1.52,1.333];
+indOfRefVec       = [1.000293,1.52,1.333];
 
-gammaH     = [-40:5:40]'*pi/180;
-gammaV     = [-26:5:26]'*pi/180;
-gamma      = [...
-    gammaH                         gammaV(1)*ones(size(gammaH));...
-    gammaH(end)*ones(size(gammaV)) gammaV;...
-    flip(gammaH)                   gammaV(end)*ones(size(gammaH));...
-    gammaH(1)*ones(size(gammaV))   flip(gammaV)];
+imageDims_px = [1000 2000];
+cameraFOV_deg = [40 20];
 
-colors ={[0 0 1],[1 0 0]};
-for kk = 1:length(rolls)
-    roll  = rolls(kk);
-    pitch = pitches(kk);
-    yaw   = yaws(kk);
-    grnd2CamRotMat = calculateRotationMatrix(roll,pitch,yaw);
+for kk = 1:length(roll_rad)
+    roll_rad  = roll_rad(kk);
+    pitch = pitche_rad(kk);
+    yaw_rad   = yaw_rad(kk);
+    grnd2CamRotMat = calculateRotationMatrix(roll_rad,pitch,yaw_rad);
     RogG = [];
     RigG =[];
     for ii = 1:length(gamma)
             [rogG,rigG,uiG] = ...
                 rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,...
-                gamma(ii,1),gamma(ii,2),indOfRef,glassPlane,glassThickness);
+                gamma(ii,1),gamma(ii,2),indOfRefVec,glassPlane,glassThickness);
             RogG(end+1,:)=rogG';
             RigG(end+1,:)=rigG';
             r = [camPosVec';rogG';rigG'];
