@@ -1,14 +1,14 @@
 %% Script to initialize Find Unit Vectors block
 
 % Convert from degrees to radians
-sideEulerAngles = sideEulerAngles.*pi/180;
-botEulerAngles = botEulerAngles.*pi/180;
-slantEulerAngles = slantEulerAngles.*pi/180;
+sideEulerAngles_rad = sideEulerAngles_deg.*pi/180;
+botEulerAngles_rad = botEulerAngles_deg.*pi/180;
+slantEulerAngles_rad = slantEulerAngles_deg.*pi/180;
 
 % Calculate rotation matrix for each camera
-GFC2Side   = calculateRotationMatrix(sideEulerAngles(1),sideEulerAngles(2),sideEulerAngles(3));
-GFC2Bottom = calculateRotationMatrix(botEulerAngles(1),botEulerAngles(2),botEulerAngles(3));
-GFC2Slant  = calculateRotationMatrix(slantEulerAngles(1),slantEulerAngles(2),slantEulerAngles(3));
+GFC2Side   = calculateRotationMatrix(sideEulerAngles_rad(1),sideEulerAngles_rad(2),sideEulerAngles_rad(3));
+GFC2Bottom = calculateRotationMatrix(botEulerAngles_rad(1),botEulerAngles_rad(2),botEulerAngles_rad(3));
+GFC2Slant  = calculateRotationMatrix(slantEulerAngles_rad(1),slantEulerAngles_rad(2),slantEulerAngles_rad(3));
 
 % Initialize ASB as side and bottom rotation matrices (4x3)
 ASB = [GFC2Side(1,:);GFC2Side(2,:);GFC2Bottom(1,:);GFC2Bottom(2,:)];
