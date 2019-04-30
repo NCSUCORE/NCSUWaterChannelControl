@@ -75,8 +75,9 @@ rioC = -glassThickness*uioC/dot(uioC,nC); % Scale to get correct magnitude
 uiC = snellsLaw3D(uioC,nC,indOfRef(2),indOfRef(3));
 
 %% Step 4: Output in absolute ground coordinates
-rogG = camPosVec + grnd2CamRotMat'*rocC;
-rigG = rogG      + grnd2CamRotMat'*rioC;
-uiG  = grnd2CamRotMat'*uiC;
+% Note that (:) ensures it comes out as a column vector
+rogG = camPosVec(:) + grnd2CamRotMat'*rocC(:);
+rigG = rogG(:)      + grnd2CamRotMat'*rioC(:);
+uiG  = grnd2CamRotMat'*uiC(:);
 end
 
