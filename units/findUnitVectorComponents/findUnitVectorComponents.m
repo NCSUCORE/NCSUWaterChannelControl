@@ -23,10 +23,10 @@ function dotSeparationVec_cm = ...
 dotSeparation_px  = (Dot2PositionVec_px - Dot1PositionVec_px)';
 
 % Reshape dotSeparation_px to be column vector
-dotSeparation_px =  reshape(dotSeparation_px,[],1)';
+dotSeparation_px =  dotSeparation_px(:);
 
 % Reshape imageDimensions to be column vector
-imageDimensions = reshape(imageDimensions,[],1)';
+imageDimensions = imageDimensions(:);
 
 % Perform pixel to centimeter conversion
 dotSeparationVec_cm  = (2*distance*tand(flip(cameraViewAngleVec_deg)))...

@@ -23,7 +23,6 @@ fprintf('\nCompiling tsc\n')
 runIds = Simulink.sdi.getAllRunIDs(); % Get all run IDs from SDI
 run = Simulink.sdi.getRun(runIds(end));
 for signalIndex=1:run.SignalCount
-    
     % Read all signals into a structure
     signalID = run.getSignalIDByIndex(signalIndex);
     signalObjs(signalIndex) = Simulink.sdi.getSignal(signalID);
@@ -36,39 +35,69 @@ for jj = 1:10000 % Use a for loop with break condition instead of while loop
     
     % Get the first element of the to-do list that has not been done
     idx = find(toDoList,1);
+    sz = 'scalar';
+    if ~isempty(regexp(signalObjs(idx).Name,'\(\d\)','ONCE'))
+        sz = 'vector';
+    end
+    if ~isempty(regexp(signalObjs(idx).Name,'\(\d,\d\)','ONCE'))
+        sz = 'matrix';
+    end
     
-    if signalObjs(idx).Dimensions == 1 % If it's a scalar
-        name = matlab.lang.makeValidName(signalObjs(idx).Name);
-        tsc.(name) = signalObjs(idx).Values;
-        tsc.(name).UserData.BlockPath = signalObjs(idx).BlockPath;
-        tsc.(name).UserData.PortIndex = signalObjs(idx).PortIndex;
-        % Update the todo list
-        toDoList(idx) = false;
-    else
-        % Search for the (number) at the end of the signal name string
-        startIndex = regexp(signalObjs(idx).Name,'(\d*)');
-        % Signal name is everything before that
-        name = matlab.lang.makeValidName(signalObjs(idx).Name(1:startIndex-2));
-        % Find all signals with names that match that
-        matchMask = contains({signalObjs(:).Name},name);
-        matches = signalObjs(matchMask);
-        % Preallocate timeseries with correct dimensions
-        tsc.(name) = matches(1).Values;
-        % Overwrite data with column vectors of nans
-        tsc.(name).Data = nan([matches(1).Dimensions 1 numel(tsc.(name).Time)]);
-        
-        for ii = 1:numel(matches) % For each data set with a matching name
-            % Get the index associated with it
-            index = regexp(matches(ii).Name,'(\d*)','match');
-            index = str2double(index{1});
-            % Take the data and stuff it into the appropriate plate in tsc
-            tsc.(name).Data(index,:,:) = matches(ii).Values.Data;
-        end
-        
-        % Update the todo list
-        tsc.(name).UserData.BlockPath = signalObjs(idx).BlockPath;
-        tsc.(name).UserData.PortIndex = signalObjs(idx).PortIndex;
-        toDoList(matchMask) = false;
+    switch sz
+        case 'scalar'
+            name = matlab.lang.makeValidName(signalObjs(idx).Name);
+            tsc.(name) = signalObjs(idx).Values;
+            tsc.(name).UserData.BlockPath = signalObjs(idx).BlockPath;
+            tsc.(name).UserData.PortIndex = signalObjs(idx).PortIndex;
+            % Update the todo list
+            toDoList(idx) = false;
+        case 'vector'
+            % Search for the (number) at the end of the signal name string
+            startIndex = regexp(signalObjs(idx).Name,'\(\d*');
+            % Signal name is everything before that
+            name = matlab.lang.makeValidName(signalObjs(idx).Name(1:startIndex-1));
+            % Find all signals with names that match that
+            matchMask = contains({signalObjs(:).Name},name);
+            matches = signalObjs(matchMask);
+            % Preallocate timeseries with correct dimensions
+            tsc.(name) = matches(1).Values;
+            % Overwrite data with column vectors of nans
+            tsc.(name).Data = nan([matches(1).Dimensions 1 numel(tsc.(name).Time)]);
+            for ii = 1:numel(matches) % For each data set with a matching name
+                % Get the index associated with it
+                index = regexp(matches(ii).Name,'(\d*)','match');
+                index = str2double(index{1});
+                % Take the data and stuff it into the appropriate plate in tsc
+                tsc.(name).Data(index,:,:) = matches(ii).Values.Data;
+            end
+            
+            % Update the todo list
+            tsc.(name).UserData.BlockPath = signalObjs(idx).BlockPath;
+            tsc.(name).UserData.PortIndex = signalObjs(idx).PortIndex;
+            toDoList(matchMask) = false;
+        case 'matrix'
+            % Search for the (number) at the end of the signal name string
+            startIndex = regexp(signalObjs(idx).Name,'\(\d*');
+            % Signal name is everything before that
+            name = matlab.lang.makeValidName(signalObjs(idx).Name(1:startIndex-1));
+            % Find all signals with names that match that
+            matchMask = contains({signalObjs(:).Name},name);
+            matches = signalObjs(matchMask);
+            
+            for ii = 1:numel(matches) % For each data set with a matching name
+                % Get the index associated with it
+                index1 = regexp(matches(ii).Name,'\(\d,','match');
+                index1 = str2double(index1{1}(2:end-1));
+                index2 = regexp(matches(ii).Name,',\d\)','match');
+                index2 = str2double(index2{1}(2:end-1));
+                % Take the data and stuff it into the appropriate plate in tsc
+                tsc.(name).Data(index1,index2,:) = matches(ii).Values.Data;
+            end
+            
+            % Update the todo list
+            tsc.(name).UserData.BlockPath = signalObjs(idx).BlockPath;
+            tsc.(name).UserData.PortIndex = signalObjs(idx).PortIndex;
+            toDoList(matchMask) = false;
     end
     
     if all(toDoList==0)
