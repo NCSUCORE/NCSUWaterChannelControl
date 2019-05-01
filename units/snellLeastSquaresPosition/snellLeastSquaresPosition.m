@@ -20,7 +20,7 @@ botBDotGF = body2GroundRotMat*botBDotPosVec_cm(:);
 
 rCentroidVec = [rCentroidSide(:); rCentroidBotA(:) ; rCentroidBotB(:) ; rCentroidSlant(:)];
 COM2DotGF    = [sideDotGF ; botADotGF ; botBDotGF ; botBDotGF];
-P = rCentroidVec + COM2DotGF;
+P = rCentroidVec - COM2DotGF;
 
 U = [...
     uCentroidSide(:) zeros(3,1)       zeros(3,1)       zeros(3,1) ;...
@@ -45,9 +45,9 @@ COMPosVec = U*d+P;
 COMPosVec = reshape(COMPosVec,[3 4]); % Reshape to 3 row by 4 col
 COMPosVec = mean(COMPosVec,2); % take mean over columns
 
-sideDotPos_cm = COMPosVec + sideDotGF;
-botADotPos_cm = COMPosVec + botADotGF;
-botBDotPos_cm = COMPosVec + botBDotGF;
+sideDotPos_cm = COMPosVec - sideDotGF;
+botADotPos_cm = COMPosVec - botADotGF;
+botBDotPos_cm = COMPosVec - botBDotGF;
 
 end
 
