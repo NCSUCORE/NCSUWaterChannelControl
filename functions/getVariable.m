@@ -1,4 +1,4 @@
-function variable = getVariable(parameterName)
+function [variable] = getVariable(parameterName)
 
 % This function returns variable name and entry in Data dictionary
 % From input of parameter name in dictionary, function returns variable

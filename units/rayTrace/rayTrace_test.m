@@ -1,5 +1,5 @@
-function [rogG,rigG,uiG,uocC,uocCMag] = ...
-    rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
+function [rogG,rigG,uiG,uocC] = ...
+    rayTrace_test(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
     glassPlane,glassThickness)
 %RAYTRACE Function to trace a ray out from a camera, into the water channel
 %   INPUTS:
@@ -59,9 +59,7 @@ rmcC  = dist2Glass*umcC;   % vector pointing at CG from C, in C frame
 
 % unit vector pointing from c to o in C frame
 uocC = [-tan(gammaV) tan(gammaH) -1]';
-
-uocCMag = sqrt((uocC(1))^2 + (uocC(2))^2 + (uocC(3))^2);
-uocC = uocC./uocCMag;
+uocC = uocC./norm(uocC);
 
 % vector from c to o in C
 % rocC = linePlaneIntersect(uocC,nC,rmcC);

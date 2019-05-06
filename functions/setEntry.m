@@ -1,4 +1,4 @@
-function variable = setEntry(parameterName,value,varargin)
+function [variable] = setEntry(parameterName,value,varargin)
 
 % This function sets value of specified parameter name to specific value
 % Inputs of parameter name, value used to specify name to be modified and

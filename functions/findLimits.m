@@ -1,4 +1,4 @@
-function limit = findLimits(parameterName)
+function [limit] = findLimits(parameterName)
 
 % This function returns the limits of the parameter defined in dictionary
 % Input of paraeterName used to navigate to location in data dictionary
