@@ -4,7 +4,7 @@ function limit = findLimits(parameterName)
 % Input of paraeterName used to navigate to location in data dictionary
 
 % Call getVariable function to Simulink parameter in dictionary
-[variable, ~] = getVariable(parameterName);
+variable = getVariable(parameterName);
 
 % Set min and max based on variable min and max values
 min = variable.Min;

@@ -32,7 +32,7 @@ if strcmpi(answer,'y')
     
     % Load parameters structure into base workspace
     fprintf('\nLoading params struct\n')
-%     loadParams
+    loadParams
 
     % Initialize controllers
     controllers_init

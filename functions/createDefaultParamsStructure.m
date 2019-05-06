@@ -58,25 +58,28 @@ createParam('initCoMPosVec_cm',[18 -2 32],-100,100,...
 % CAMERA PROPERTIES
 createParam('cameraFOV_deg',[42 26],0,60,...
     'Camera fielOFd of view angles from centerline [horiz vert]','deg')
-% Side camera 6D
-% Dummy - [19 40 43]
+% Side camera 6DOF
+% Dummy - [19 40 43], new origin - [10 39.5 67.5]
 % Water Channel - [16 42 35]
 createParam('sideCamPosVec_cm',[19 40 43],-100,100,...
     'Side camera position vector.','cm')
+% Dummy - [0 89.2 89.5]
 createParam('sideCamEulAng_deg',[0 90 90],-360,360,...
     'Side camera Euler angles, [Roll Pitch Yaw], rotation order is Z, Y, X.','deg')
 % Bottom camera 6DOF
-% Dummy - [20 1 -3]
+% Dummy - [20 1 -3], new origin - [12 -2 22.5]
 % Water Channel - [14 3.5 -6.25]
 createParam('botCamPosVec_cm',[20 1 -3],-100,100,...
     'Bottom camera position vector.','cm')
+% Dummy - [0.2 179 180]
 createParam('botCamEulAng_deg',[0 180 180],-360,360,...
     'Bottom camera Euler angles, [Roll Pitch Yaw], rotation order is Z, Y, X.','deg')
 % Slant camera 6DOF
-% Dummy - [-22 1 -1]
+% Dummy - [-22 1 -1], new origin - [-30.5 -2 26]
 % Water Channel - [-21 3 -7]
 createParam('slntCamPosVec_cm',[-22 1 -1],-100,100,...
     'Slant camera position vector.','cm')
+% Dummy - [0 133.9 180.6]
 createParam('slntCamEulAng_deg',[0 135 180],-360,360,...
     'Slant camera Euler angles, [Roll Pitch Yaw], rotation order is Z, Y, X.','deg')
 
@@ -200,13 +203,13 @@ paramsDir = what('paramsData');
 
 % Save params to params.mat file
 evalin('base',['save(''' paramsDir.path filesep 'params.mat'',''params'');'])
-save([ paramsDir.path filesep 'params.mat'],'-struct','params');
+save([ paramsDir.path filesep 'params.mat']);
 
-% Open dictionary and migrate to section
-myDictionaryObj = Simulink.data.dictionary.open('paramsDataDictionary.sldd');
-dDataSectObj = getSection(myDictionaryObj,'Design Data');
-
-% Overwrite current data dictionary values given params mat file
-importFromFile(dDataSectObj,'params.mat','existingVarsAction','overwrite');
+% % Open dictionary and migrate to section
+% myDictionaryObj = Simulink.data.dictionary.open('paramsDataDictionary.sldd');
+% dDataSectObj = getSection(myDictionaryObj,'Design Data');
+% 
+% % Overwrite current data dictionary values given params mat file
+% importFromFile(dDataSectObj,'params.mat','existingVarsAction','overwrite');
 
 end

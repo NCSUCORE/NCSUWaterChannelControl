@@ -8,7 +8,7 @@ function variable = setEntry(parameterName,value,varargin)
 % to mask argument in models and mask variable name for set_param use
 
 % Get variable and dictionary entry from getVariable function
-[variable,entry] = getVariable(parameterName);
+variable = getVariable(parameterName);
 
 % If dimension greater than 1 (non-scalar), use first varargin value to
 % specify dimension to set
@@ -47,7 +47,7 @@ else
 end
 
 % Set changed value in data dictionary
-setValue(entry,variable);
+% setValue(entry,variable);
 
 end
 

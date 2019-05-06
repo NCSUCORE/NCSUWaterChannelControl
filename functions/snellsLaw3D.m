@@ -9,10 +9,10 @@ function [uVecOut] = snellsLaw3D(uVecIn,normalUVec,n1,n2)
 %   uVecOut - unit vector describing outgoing direction of travel
 
 % If the incoming vector is perpindicular to surface
-if abs(uVecIn'*normalUVec)<eps
-    uVecOut = uVecIn;
-    return
-end
+% if abs(uVecIn'*normalUVec)<eps
+%     uVecOut = uVecIn;
+%     return
+% end
 
 % See here https://en.wikipedia.org/wiki/Snell%27s_law#Vector_form
 n = normalUVec;
