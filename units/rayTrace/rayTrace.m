@@ -60,7 +60,7 @@ rmcC  = dist2Glass*umcC;   % vector pointing at CG from C, in C frame
 % unit vector pointing from c to o in C frame
 uocC = [-tan(gammaV) tan(gammaH) -1]';
 
-uocCMag = sqrt((uocC(1))^2 + (uocC(2))^2 + (uocC(3))^2);
+uocCMag = sqrt(sum(uocC.^2));
 uocC = uocC./uocCMag;
 
 % vector from c to o in C
