@@ -39,15 +39,15 @@ Delta = [I -I  O  O;
      
 alpha = (Delta*U)'*(Delta*U);
 
-d = -(alpha'*alpha)\alpha'*U'*Delta'*Delta*P;
+d = -(alpha'*alpha)\(alpha'*U'*Delta'*Delta*P);
 
 COMPosVec = U*d+P;
 COMPosVec = reshape(COMPosVec,[3 4]); % Reshape to 3 row by 4 col
 COMPosVec = mean(COMPosVec,2); % take mean over columns
 
-sideDotPos_cm = COMPosVec - sideDotGF;
-botADotPos_cm = COMPosVec - botADotGF;
-botBDotPos_cm = COMPosVec - botBDotGF;
+sideDotPos_cm = COMPosVec + sideDotGF;
+botADotPos_cm = COMPosVec + botADotGF;
+botBDotPos_cm = COMPosVec + botBDotGF;
 
 end
 
