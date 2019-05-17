@@ -11,7 +11,7 @@ yaw_deg           = 180;
 glassThickness_cm = 2;
 dist2Glass_cm     = 5;
 glassPlane        = 1;
-indOfRefVec       = [1.000293,1.52,1.333];
+indOfRefVec       = [1,1.52,1.33];
 imageDims_px      = [1000 2000];
 cameraFOV_deg     = [40 20];
 

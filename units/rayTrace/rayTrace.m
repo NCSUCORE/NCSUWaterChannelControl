@@ -1,4 +1,4 @@
-function [rogG,rigG,uiG,uocC,uocCMag] = ...
+function [rogG,rigG,uiG,rocC,rioC] = ...
     rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
     glassPlane,glassThickness)
 %RAYTRACE Function to trace a ray out from a camera, into the water channel
@@ -42,8 +42,8 @@ function [rogG,rigG,uiG,uocC,uocCMag] = ...
 %   travel of the ray.
 
 %% Step 1: Get position of point where ray enters glass
-% unit vector normal to glass pointing out, in ground frame
 
+% unit vector normal to glass pointing out, in ground frame
 switch glassPlane
     case 1 % xy plane
         nG = [0 0 -1]';
