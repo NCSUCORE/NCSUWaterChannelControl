@@ -19,7 +19,7 @@ dSB = [-unitVecCam1(1)/sideSep;-unitVecCam1(2)/sideSep;...
     unitVecCam2a(1)/bottomASep;unitVecCam2a(2)/bottomASep];
 
 % Flip sign of unit vectors from bottom cam A (unitVecCam2b) and slant cam
-% (nitVecCam3) because of reverse orientation with ground fixed frame
+% (unitVecCam3) because of reverse orientation with ground fixed frame
 dBL = -[unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
     unitVecCam3(1)/bottomBSep;unitVecCam3(2)/bottomBSep];
 
