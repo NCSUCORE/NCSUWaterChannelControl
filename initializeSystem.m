@@ -35,6 +35,7 @@ if strcmpi(answer,'y')
     loadParams
 
     % Initialize controllers
+    fprintf('\nLoading controller initialization\n')
     controllers_init
     
     fprintf('\nOpening all models\n')
