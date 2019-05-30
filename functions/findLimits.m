@@ -1,7 +1,12 @@
 function [limit] = findLimits(parameterName)
 
 % This function returns the limits of the parameter defined in dictionary
-% Input of paraeterName used to navigate to location in data dictionary
+
+% INPUTS:
+% parameterName - name of parameter to get limits of
+
+% OUTPUTS:
+% limit - row vector containing min and max values of parameter
 
 % Call getVariable function to Simulink parameter in dictionary
 variable = getVariable(parameterName);

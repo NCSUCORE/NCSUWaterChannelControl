@@ -33,10 +33,18 @@ if strcmpi(answer,'y')
     % Load parameters structure into base workspace
     fprintf('\nLoading params struct\n')
     loadParams
+    
+    while ~ismember('params',evalin('base','who'))
+        loadParams
+    end
 
     % Initialize controllers
     fprintf('\nLoading controller initialization\n')
     controllers_init
+    
+    while ~ismember('CONTROLLER',evalin('base','who'))
+        controllers_init
+    end
     
     fprintf('\nOpening all models\n')
     % Window positions determined from using get_param(gcs,'location')

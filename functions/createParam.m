@@ -1,8 +1,15 @@
 function createParam(name,value,min,max,description,units)
 
-% This function creates Simulink parameter object given inputs to function
-% Inputs of parameter name, value, min, max, description, and units used
-% to fully define Simulink parameter
+% This function creates Simulink parameter object given input
+% specifications to function
+
+% INPUTS:
+% name - name of parameter
+% value - value of object
+% min - minimum value of object
+% max - maximum value of object
+% description - description of parameter
+% units - units of object
 
 % Pre-pend the units to the description
 description = ['[' units '] ' description];

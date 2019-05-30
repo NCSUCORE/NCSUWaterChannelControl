@@ -11,7 +11,7 @@ function [COMPosVec,sideDotPos_cm,botADotPos_cm,botBDotPos_cm]...
     body2GroundRotMat,...
     sideDotPosVec_cm, botADotPosVec_cm, botBDotPosVec_cm)
 
-%RESOLVECOM Summary of this function goes here
+%snellLeastSquaresPosition 
 %   Detailed explanation goes here
 
 sideDotGF = body2GroundRotMat*sideDotPosVec_cm(:);

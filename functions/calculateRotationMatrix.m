@@ -1,10 +1,18 @@
 function R = calculateRotationMatrix(roll,pitch,yaw)
 
-% This funciton calculates the rotation matrix called RGB in the Mathematica
-% notebook rotationMatrix.nb located in the documentation folder.
-
+% This function calculates the rotation matrix called RGB (ground to body)
+% in the Mathematica notebook rotationMatrix.nb located in the 
+% documentation folder.
 % This rotation matrix rotates vectors from ground coordinate system to
 % body/camera coordinate system
+
+% INPUTS:
+% roll - roll of the current body
+% pitch - pitch of the current body
+% yaw - yaw of the current body
+
+% OUTPUTS:
+% R - ground to body rotation matrix
 
 % Yaw part of rotation matrix
 Ryaw = [...
