@@ -18,7 +18,7 @@ minFcn = @(s) objJ(updateLaw(s,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBo
     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
 
-for ii = 1:100
+for ii = 1:10
     RGB = calculateRotationMatrix(x0(1),x0(2),x0(3));
     RBG = RGB';
     
