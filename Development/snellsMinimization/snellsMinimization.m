@@ -1,34 +1,44 @@
-function [outputArg1] = snellsMinimization(x0,rCentroidSide,rCentroidBotA,...
+function [x] = snellsMinimization(x0,CoMPos,rCentroidSide,rCentroidBotA,...
     rCentroidBotB,rCentroidSlant,uCentroidSide,...
     uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm, botADotPosVec_cm, botBDotPosVec_cm)
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
 
 %SNELLSMINIMIZATION Summary of this function goes here
 %   Detailed explanation goes here
 
-% x0 = [0 0 0 0 0 0]';
-RGB = calculateRotationMatrix(x0(4:6));
-RBG = RGB';
+% x_0 = [0 0 0]';
+% J = objJ(x0,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+%     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
 
-updateLaw = @(s) x_0 - gradObjJ(x)*s;
+s0 = 1;
+minFcn = @(s) objJ(updateLaw(s,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm),CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
 
-for ii = 1:1000
+for ii = 1:100
+    RGB = calculateRotationMatrix(x0(1),x0(2),x0(3));
+    RBG = RGB';
+    
     CoMPos = snellLeastSquaresPosition(rCentroidSide,rCentroidBotA,...
     rCentroidBotB,rCentroidSlant,uCentroidSide,...
     uCentroidBotA,uCentroidBotB,uCentroidSlant,RBG,...
     sideDotPosVec_cm, botADotPosVec_cm, botBDotPosVec_cm);
-    
-    x0 = [CoMPos 0 0 0];
-    s0 = 1;
+   
     for jj = 1:100
-        [xLeft, xRight] = bound(s0, 0.1, 'FunctionHandle', updateLaw);
-        xLims = goldenSection(s0, 0.01, 'FunctionHandle', updateLaw);
+%         [xLeft, xRight] = bound(s0, 0.1, 'FunctionHandle', updateLaw);
+        xLims = goldenSection(s0, 0.1, 'FunctionHandle', minFcn);
         s_star = mean(xLims);
-        s0 = s_star;
+        x_star = updateLaw(s_star,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+                           rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,...
+                           uCentroidSlant,sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+        x0 = x_star;
     end
 end
 
-% xOut = BFGS(x0);
+x = [CoMPos;x0];
 
 end
 

@@ -1,38 +1,40 @@
-function J = objJ(x)
+function J = objJ(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
 
 %OBJJ Summary of this function goes here
 %   Detailed explanation goes here
 
-sideInPos = tsc.rCentroidSide.Data(:,:,end);
-botAInPos = tsc.rCentroidBotA.Data(:,:,end);
-botBInPos = tsc.rCentroidBotB.Data(:,:,end);
-slntCamPos = tsc.rCentroidSlant.Data(:,:,end);
-
-uSide = tsc.uCentroidSide.Data(:,:,end);
-uBotA = tsc.uCentroidBotA.Data(:,:,end);
-uBotB = tsc.uCentroidBotB.Data(:,:,end);
-uSlnt = tsc.uCentroidSlnt.Data(:,:,end);
-
-sideDotVecBF = params.sideDotPosVec_cm.Value';
-botADotVecBF = params.botADotPosVec_cm.Value';
-botBDotVecBF = params.botBDotPosVec_cm.Value';
+% rCentroidSide = tsc.rCentroidSide.Data(:,:,end);
+% rCentroidBotA = tsc.rCentroidBotA.Data(:,:,end);
+% rCentroidBotB = tsc.rCentroidBotB.Data(:,:,end);
+% rCentroidSlant = tsc.rCentroidSlant.Data(:,:,end);
+% 
+% uCentroidSide = tsc.uCentroidSide.Data(:,:,end);
+% uCentroidBotA = tsc.uCentroidBotA.Data(:,:,end);
+% uCentroidBotB = tsc.uCentroidBotB.Data(:,:,end);
+% uCentroidSlant = tsc.uCentroidSlant.Data(:,:,end);
+% 
+% sideDotPosVec_cm = params.sideDotPosVec_cm.Value';
+% botADotPosVec_cm = params.botADotPosVec_cm.Value';
+% botBDotPosVec_cm = params.botBDotPosVec_cm.Value';
 
 % x = [xCoM, yCoM, zCoM, roll, pitch, yaw]
 
-RGB = calculateRotationMatrix(x(4:6));
+RGB = calculateRotationMatrix(x(1),x(2),x(3));
 RBG = RGB';
 
-d1 = uSide'*(x(1:3) - RBG*sideDotVecBF)/(uSide'*sideInPos);
-e1 = dot( ((x(1:3) + sideDotVecBF) - (sideInPos + uSide*d1)),((x(1:3) + sideDotVecBF) - (sideInPos + uSide*d1)) );
+d1 = uCentroidSide'*(CoMPos - RBG*sideDotPosVec_cm)/(uCentroidSide'*rCentroidSide);
+e1 = dot( ((CoMPos + sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)),((CoMPos + sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)) );
 
-d2 = uBotA'*(x(1:3) - RBG*botADotVecBF)/(uBotA'*botAInPos);
-e2 = dot( ((x(1:3) + botADotVecBF) - (botAInPos + uBotA*d2)),((x(1:3) + botADotVecBF) - (botAInPos + uBotA*d2)) );
+d2 = uCentroidBotA'*(CoMPos - RBG*botADotPosVec_cm)/(uCentroidBotA'*rCentroidBotA);
+e2 = dot( ((CoMPos + botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)),((CoMPos + botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)) );
 
-d3 = uBotB'*(x(1:3) - RBG*botBDotVecBF)/(uBotB'*botBInPos);
-e3 = dot( ((x(1:3) + botBDotVecBF) - (botBInPos + uBotB*d3)),((x(1:3) + botBDotVecBF) - (botAInPos + uBotB*d3)) );
+d3 = uCentroidBotB'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidBotB'*rCentroidBotB);
+e3 = dot( ((CoMPos + botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)),((CoMPos + botBDotPosVec_cm) - (rCentroidBotA + uCentroidBotB*d3)) );
 
-d4 = uSlnt'*(x(1:3) - RBG*botBDotVecBF)/(uSlnt'*slntCamPos);
-e4 = dot( ((x(1:3) + botBDotVecBF) - (slntCamPos + uSlnt*d4)),((x(1:3) + botBDotVecBF) - (slntCamPos + uSlnt*d4)) );
+d4 = uCentroidSlant'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidSlant'*rCentroidSlant);
+e4 = dot( ((CoMPos + botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)),((CoMPos + botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)) );
 
 J = e1 + e2 + e3 + e4;
 

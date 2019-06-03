@@ -22,12 +22,12 @@ stepSize = p.Results.StepSize;
 x0       = p.Results.x0;
 
 for tryCount = 1:p.Results.StepTimeout
-    if fHandle(x0-stepSize) >= fHandle(x0) &&...
-            fHandle(x0) >= fHandle(x0+stepSize)
+    if max(fHandle(x0-stepSize)) >= max(fHandle(x0)) &&...
+            max(fHandle(x0)) >= max(fHandle(x0+stepSize))
         sign = +1;
         break
-    elseif  fHandle(x0-stepSize) <= fHandle(x0) &&...
-            fHandle(x0) <= fHandle(x0+stepSize)
+    elseif  max(fHandle(x0-stepSize)) <= max(fHandle(x0)) &&...
+            max(fHandle(x0)) <= max(fHandle(x0+stepSize))
         sign = -1;
         break
     end
