@@ -5,6 +5,8 @@ function J = objJ(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
 %OBJJ Summary of this function goes here
 %   Detailed explanation goes here
 
+% x = [roll, pitch, yaw]
+
 % rCentroidSide = tsc.rCentroidSide.Data(:,:,end);
 % rCentroidBotA = tsc.rCentroidBotA.Data(:,:,end);
 % rCentroidBotB = tsc.rCentroidBotB.Data(:,:,end);
@@ -19,22 +21,24 @@ function J = objJ(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
 % botADotPosVec_cm = params.botADotPosVec_cm.Value';
 % botBDotPosVec_cm = params.botBDotPosVec_cm.Value';
 
-% x = [xCoM, yCoM, zCoM, roll, pitch, yaw]
-
 RGB = calculateRotationMatrix(x(1),x(2),x(3));
 RBG = RGB';
 
 d1 = uCentroidSide'*(CoMPos - RBG*sideDotPosVec_cm)/(uCentroidSide'*rCentroidSide);
-e1 = dot( ((CoMPos + sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)),((CoMPos + sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)) );
+e1 = dot( ((CoMPos + RBG*sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)),...
+          ((CoMPos + RBG*sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)) );
 
 d2 = uCentroidBotA'*(CoMPos - RBG*botADotPosVec_cm)/(uCentroidBotA'*rCentroidBotA);
-e2 = dot( ((CoMPos + botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)),((CoMPos + botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)) );
+e2 = dot( ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)),...
+          ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)) );
 
 d3 = uCentroidBotB'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidBotB'*rCentroidBotB);
-e3 = dot( ((CoMPos + botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)),((CoMPos + botBDotPosVec_cm) - (rCentroidBotA + uCentroidBotB*d3)) );
+e3 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)),...
+          ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotA + uCentroidBotB*d3)) );
 
 d4 = uCentroidSlant'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidSlant'*rCentroidSlant);
-e4 = dot( ((CoMPos + botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)),((CoMPos + botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)) );
+e4 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)),...
+          ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)) );
 
 J = e1 + e2 + e3 + e4;
 

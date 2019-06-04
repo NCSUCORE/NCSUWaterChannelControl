@@ -9,7 +9,7 @@ addOptional(p,'StepSizeMultiplier',2,@(x) isnumeric(x) && isscalar(x)  && x>=1)
 % Number of iterations before quitting bounding phase
 addOptional(p,'BoundingTimeout',1000,@(x) isnumeric(x) && isscalar(x))
 % Handle of the function that you want to minimize
-addOptional(p,'FunctionHandle',@objF,@(x) isa(x,'function_handle'))
+addOptional(p,'FunctionHandle',@objJ,@(x) isa(x,'function_handle'))
 % Initial point/guess
 addRequired(p,'x0',@(x) isnumeric(x) && isvector(x))
 % Step size
@@ -22,8 +22,8 @@ stepSize = p.Results.StepSize;
 x0       = p.Results.x0;
 
 for tryCount = 1:p.Results.StepTimeout
-    if max(fHandle(x0-stepSize)) >= max(fHandle(x0)) &&...
-            max(fHandle(x0)) >= max(fHandle(x0+stepSize))
+    if min(fHandle(x0-stepSize)) >= min(fHandle(x0)) &&...
+            min(fHandle(x0)) >= min(fHandle(x0+stepSize))
         sign = +1;
         break
     elseif  max(fHandle(x0-stepSize)) <= max(fHandle(x0)) &&...
