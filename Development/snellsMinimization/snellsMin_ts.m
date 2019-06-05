@@ -22,10 +22,13 @@ CoMPos = params.initCoMPosVec_cm.Value';
 
 %%
 
-snellsMinimization(x0,CoMPos,rCentroidSide,rCentroidBotA,...
+[CoMPos,EulAng] = snellsMinimization(x0,CoMPos,rCentroidSide,rCentroidBotA,...
     rCentroidBotB,rCentroidSlant,uCentroidSide,...
     uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+
+CoMPos
+EulAng = EulAng.*180/pi
 
 %%
 

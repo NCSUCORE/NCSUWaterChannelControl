@@ -34,7 +34,7 @@ e2 = dot( ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2))
 
 d3 = uCentroidBotB'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidBotB'*rCentroidBotB);
 e3 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)),...
-          ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotA + uCentroidBotB*d3)) );
+          ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)) );
 
 d4 = uCentroidSlant'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidSlant'*rCentroidSlant);
 e4 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)),...

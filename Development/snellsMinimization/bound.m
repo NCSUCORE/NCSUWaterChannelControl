@@ -1,53 +1,83 @@
-function [xLeft,xRight] = bound(x0, stepSize,varargin)
+function [sLeft,sRight] = bound(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,varargin)
 
 p = inputParser;
 
 % Number of iterations before stopping attempt to tune step size
-addOptional(p,'StepTimeout',1000,@(x) isnumeric(x) && isscalar(x))
+addOptional(p,'StepTimeout',1000,@(s) isnumeric(s) && isscalar(s))
 % How much to increase the step size at every iteration
-addOptional(p,'StepSizeMultiplier',2,@(x) isnumeric(x) && isscalar(x)  && x>=1)
+addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s) && s>=1)
 % Number of iterations before quitting bounding phase
-addOptional(p,'BoundingTimeout',1000,@(x) isnumeric(x) && isscalar(x))
+addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
 % Handle of the function that you want to minimize
-addOptional(p,'FunctionHandle',@objJ,@(x) isa(x,'function_handle'))
+addOptional(p,'FunctionHandle',@objJ,@(s) isa(s,'function_handle'))
 % Initial point/guess
-addRequired(p,'x0',@(x) isnumeric(x) && isvector(x))
-% Step size
-addRequired(p,'StepSize',@(x) isnumeric(x) && isscalar(x) && x>0)
+addRequired(p,'s0',@(s) isnumeric(s) && isvector(s))
 
-parse(p,x0,stepSize,varargin{:})
+addRequired(p,'x0',@(s) isnumeric(s) && isvector(s))
+% Step size
+addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
+
+parse(p,s0,x0,stepSize,varargin{:})
 
 fHandle  = p.Results.FunctionHandle;
 stepSize = p.Results.StepSize;
+s0       = p.Results.s0;
 x0       = p.Results.x0;
 
 for tryCount = 1:p.Results.StepTimeout
-    if min(fHandle(x0-stepSize)) >= min(fHandle(x0)) &&...
-            min(fHandle(x0)) >= min(fHandle(x0+stepSize))
+    if fHandle(s0-stepSize,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) >= ...
+       fHandle(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) && ...
+       fHandle(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) >= ...
+       fHandle(s0+stepSize,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
         sign = +1;
         break
-    elseif  max(fHandle(x0-stepSize)) <= max(fHandle(x0)) &&...
-            max(fHandle(x0)) <= max(fHandle(x0+stepSize))
+    elseif fHandle(s0-stepSize,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+                rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+                sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) <= ...
+           fHandle(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+                rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+                sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) && ...
+           fHandle(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+                rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+                sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) <= ...
+           fHandle(s0+stepSize,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+                rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+                sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
         sign = -1;
         break
     end
     stepSize = stepSize/2^tryCount;
 end
 
-xCurrent = x0;
+sCurrent = s0;
 for ii = 0:p.Results.BoundingTimeout-1
-    xRight = xCurrent + sign*stepSize*p.Results.StepSizeMultiplier^ii;
-    if fHandle(xRight)>fHandle(xCurrent)
+    sRight = sCurrent + sign*stepSize*p.Results.StepSizeMultiplier^ii;
+    if fHandle(sRight,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) > ...
+       fHandle(sCurrent,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
         break
     end
-    xLeft = xCurrent;
-    xCurrent = xRight;
+    sLeft = sCurrent;
+    sCurrent = sRight;
 end
 
 if sign == -1
-   xTemp  = sort([xLeft xRight]) ;
-   xLeft  = xTemp(1);
-   xRight = xTemp(2);
+   sTemp  = sort([sLeft sRight]) ;
+   sLeft  = sTemp(1);
+   sRight = sTemp(2);
 end
 
 end

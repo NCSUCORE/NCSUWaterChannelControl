@@ -1,4 +1,6 @@
-function xLims = goldenSection(x0,stepSize,varargin)
+function sLims = goldenSection(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,varargin)
 % Function to implement golden section to minimize a scalar function
 %
 % Required Inputs
@@ -22,25 +24,30 @@ function xLims = goldenSection(x0,stepSize,varargin)
 
 % Input parsing
 p = inputParser;
-addRequired(p,'x0',@(x) isnumeric(x) && isscalar(x))
-addRequired(p,'StepSize',@(x) isnumeric(x) && isscalar(x) && x>0)
-addOptional(p,'DisplayOutput',false,@(x) islogical(x))
-addOptional(p,'MaxIterations',1000,@(x) isnumeric(x) && isscalar(x) && x>0)
-addOptional(p,'FunctionConvergence',0.0001,@(x) isnumeric(x) && isscalar(x) && x>=0)
-addOptional(p,'InputConvergence',0.0001,@(x) isnumeric(x) && isscalar(x) && x>=0)
-addOptional(p,'StepTimeout',100,@(x) isnumeric(x) && isscalar(x))
-addOptional(p,'StepSizeMultiplier',2,@(x) isnumeric(x) && isscalar(x)  && x>=1)
-addOptional(p,'BoundingTimeout',1000,@(x) isnumeric(x) && isscalar(x))
-addOptional(p,'FunctionHandle',@objJ,@(x) isa(x,'function_handle'))
-parse(p,x0,stepSize,varargin{:})
+addRequired(p,'s0',@(s) isnumeric(s) && isscalar(s))
+addRequired(p,'x0',@(s) isnumeric(s) && isvector(s))
+addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
+addOptional(p,'DisplayOutput',false,@(s) islogical(s))
+addOptional(p,'MaxIterations',1000,@(s) isnumeric(s) && isscalar(s) && s>0)
+addOptional(p,'FunctionConvergence',0.0001,@(s) isnumeric(s) && isscalar(s) && s>=0)
+addOptional(p,'InputConvergence',0.0001,@(s) isnumeric(s) && isscalar(s) && s>=0)
+addOptional(p,'StepTimeout',100,@(s) isnumeric(s) && isscalar(s))
+addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s)  && s>=1)
+addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
+addOptional(p,'FunctionHandle',@objJ,@(s) isa(s,'function_handle'))
+parse(p,s0,x0,stepSize,varargin{:})
 
 % Rename some variables to clean up code later on
 fHandle  = p.Results.FunctionHandle;
 stepSize = p.Results.StepSize;
+s0       = p.Results.s0;
 x0       = p.Results.x0;
 
 % Bounding Phase
-[xl,xr] = bound(x0,stepSize,'FunctionHandle',p.Results.FunctionHandle,...
+[sl,sr] = bound(s0,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,...
+    'FunctionHandle',p.Results.FunctionHandle,...
     'StepTimeout',p.Results.StepTimeout,...
     'StepSizeMultiplier',p.Results.StepSizeMultiplier,...
     'BoundingTimeout',p.Results.BoundingTimeout,...
@@ -48,12 +55,16 @@ x0       = p.Results.x0;
 
 % Begin golden section
 tau = 1 - 0.38197;
-initialRange = abs(xr-xl);
-fl = fHandle(xl);
-fr = fHandle(xr);
+initialRange = abs(sr-sl);
+fl = fHandle(sl,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+fr = fHandle(sr,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
 % Print column headers to command window for output
 if p.Results.DisplayOutput
-    headings = {'xl','Fl','x1','F1','x2','F2','xr','Fr','xOpt','FOpt'};
+    headings = {'sl','Fl','s1','F1','s2','F2','sr','Fr','sOpt','FOpt'};
     headingString = [' '];
     for ii = 1:length(headings)
         headingString = [headingString pad(headings{ii},11)];
@@ -62,32 +73,39 @@ if p.Results.DisplayOutput
 end
 
 for ii = 1:p.Results.MaxIterations
-    xTwo = (1-tau)*xl+tau*xr;
-    xOne = tau*xl+(1-tau)*xr;
-    fOne = fHandle(xOne);
-    fTwo = fHandle(xTwo);
+    sTwo = (1-tau)*sl+tau*sr;
+    sOne = tau*sl+(1-tau)*sr;
+    fOne = fHandle(sOne,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+        rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+    fTwo = fHandle(sTwo,x0,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+        rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
     fMin = min([fl fr fOne fTwo]);
     fMax = max([fl fr fOne fTwo]);
-    xMin = min([xl xr xOne xTwo]);
-    xMax = max([xl xr xOne xTwo]);
+    sMin = min([sl sr sOne sTwo]);
+    sMax = max([sl sr sOne sTwo]);
     if p.Results.DisplayOutput
         fprintf('%10f %10f %10f %10f %10f %10f %10f %10f %10f %10f \n',...
-            xl,fl,xOne,fOne,xTwo,fTwo,xr,fr,(xr-xl)/2,fHandle((xr-xl)/2))
+            sl,fl,sOne,fOne,sTwo,fTwo,sr,fr,(sr-sl)/2,fHandle((sr-sl)/2,x0,CoMPos,...
+            rCentroidSide,rCentroidBotA,rCentroidBotB,rCentroidSlant,...
+            uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm))
     end
-    if abs((fMax-fMin)/fMin)<= p.Results.FunctionConvergence || ...
-            abs((xMax - xMin)/initialRange) <= p.Results.InputConvergence
+    if abs((fMax-fMin)/fMin) <= p.Results.FunctionConvergence || ...
+            abs((sMax-sMin)/initialRange) <= p.Results.InputConvergence
         if p.Results.DisplayOutput
             fprintf('\nSolution converged.  Stopping program.\n')
         end
         break
     end
-    if fOne>fTwo
-        xl = xOne;
-        f1 = fOne;
+    if fOne > fTwo
+        sl = sOne;
+        fl = fOne;
     else
-        xr = xTwo;
+        sr = sTwo;
         fr = fTwo;
     end
 end
-xLims = [xl xr];
+sLims = [sl sr];
 end
