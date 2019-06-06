@@ -1,0 +1,46 @@
+function [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
+    rCentroidBotB,rCentroidSlant,uCentroidSide,...
+    uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
+
+%gradientDescentMin Summary of this function goes here
+%   Detailed explanation goes here
+
+% x0 = [0 0 0]';
+% x = [roll pitch yaw]
+
+% J = objJ(x0,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+%     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+
+% minFcn = @(s,x) objJ(updateLaw(s,x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+%     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm),CoMPos,rCentroidSide,rCentroidBotA,...
+%     rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+
+x = x0;
+
+for ii = 1:10
+    RGB = calculateRotationMatrix(x(1),x(2),x(3));
+    RBG = RGB';
+    
+    CoMPos = snellLeastSquaresPosition(rCentroidSide,rCentroidBotA,...
+        rCentroidBotB,rCentroidSlant,uCentroidSide,...
+        uCentroidBotA,uCentroidBotB,uCentroidSlant,RBG,...
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+   
+%     x = [x;0];
+    for jj = 1:10
+        x = powellsMethod(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,'FunctionHandle',@objJ);
+        Eul{jj,ii} = x(1:3)'.*180/pi;
+    end
+    x = x(1:3)';
+end
+
+EulAng = x;
+
+end
+
