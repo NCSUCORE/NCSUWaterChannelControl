@@ -24,19 +24,19 @@ function J = objJ(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
 RGB = calculateRotationMatrix(x(1),x(2),x(3));
 RBG = RGB';
 
-d1 = uCentroidSide'*(CoMPos - RBG*sideDotPosVec_cm)/(uCentroidSide'*rCentroidSide);
+d1 = uCentroidSide'*(CoMPos - RBG*sideDotPosVec_cm - rCentroidSide);
 e1 = dot( ((CoMPos + RBG*sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)),...
           ((CoMPos + RBG*sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)) );
 
-d2 = uCentroidBotA'*(CoMPos - RBG*botADotPosVec_cm)/(uCentroidBotA'*rCentroidBotA);
+d2 = uCentroidBotA'*(CoMPos - RBG*botADotPosVec_cm - rCentroidBotA);
 e2 = dot( ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)),...
           ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)) );
 
-d3 = uCentroidBotB'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidBotB'*rCentroidBotB);
+d3 = uCentroidBotB'*(CoMPos - RBG*botBDotPosVec_cm - rCentroidBotB);
 e3 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)),...
           ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)) );
 
-d4 = uCentroidSlant'*(CoMPos - RBG*botBDotPosVec_cm)/(uCentroidSlant'*rCentroidSlant);
+d4 = uCentroidSlant'*(CoMPos - RBG*botBDotPosVec_cm - rCentroidSlant);
 e4 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)),...
           ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)) );
 
