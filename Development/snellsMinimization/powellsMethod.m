@@ -66,7 +66,7 @@ for ii = 1:p.Results.MaxIterations
                     'StepSize',p.Results.StepSize,'DisplayOutput',false);
                 alphaStar = mean(alphaLims);
         end
-        alphaStar*S(jj,:)*180/pi
+%         alphaStar*S(jj,:)*180/pi
         X(jj+1,:) = X(jj,:) + alphaStar*S(jj,:);
     end
     if p.Results.DisplayOutput
@@ -91,20 +91,24 @@ for ii = 1:p.Results.MaxIterations
     % Update the matrix holding the search directions
     S = [S(2:end,:);X(end,:) - X(1,:)];
     % Update/reset the matrix of points
-    if ii>2 && max(abs(X(end,(1:3)) - X(1,(1:3)))) <= p.Results.InputConvergence
-        X = X(end,:);
-        break
-    end
+    %     if ii>2 && max(abs(X(end,(1:3)) - X(1,(1:3)))) <= p.Results.InputConvergence
+    %
+    %         break
+    %     end
     X = X(end,:);
-    % Log the function value
-    F(ii) = p.Results.FunctionHandle(X',CoMPos,rCentroidSide,...
-        rCentroidBotA,rCentroidBotB,rCentroidSlant,uCentroidSide,...
-        uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
-    % Check for convergence
-    if ii>2 && abs((F(ii-1)-min(F))/min(F))<= p.Results.FunctionConvergence
+    if all(abs(S(end,:))*180/pi<0.01)
         break
     end
+    
+    % Log the function value
+    %     F(ii) = p.Results.FunctionHandle(X',CoMPos,rCentroidSide,...
+    %         rCentroidBotA,rCentroidBotB,rCentroidSlant,uCentroidSide,...
+    %         uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+    %         sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+    % Check for convergence
+    %     if ii>2 && abs((F(ii-1)-min(F))/min(F))<= p.Results.FunctionConvergence
+    %         break
+    %     end
 end
 
 end

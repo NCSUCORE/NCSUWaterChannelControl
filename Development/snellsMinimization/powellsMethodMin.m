@@ -19,9 +19,10 @@ function [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroi
 %     rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
 %     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
 
-x = x0;
+dsgnVec = [];
 
-for ii = 1:5
+x = x0;
+for ii = 1:100
     RGB = calculateRotationMatrix(x(1),x(2),x(3));
     RBG = RGB';
     
@@ -29,18 +30,21 @@ for ii = 1:5
         rCentroidBotB,rCentroidSlant,uCentroidSide,...
         uCentroidBotA,uCentroidBotB,uCentroidSlant,RBG,...
         sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+
+    x = powellsMethod(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
+        rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,'FunctionHandle',@objJ,...
+        'LineSearchMethod',lineSearch,'DisplayOutput',false);
    
-    for jj = 1:5
-        x = powellsMethod(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-            rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,'FunctionHandle',@objJ,...
-            'LineSearchMethod',lineSearch)
-        Eul{jj,ii} = x'.*180/pi;
+        dsgnVec(end+1,:) = [CoMPos(:)' x(:)'*180/pi];
+    
+    if ii>2 &&...
+            all(abs(dsgnVec(end,1:3)-dsgnVec(end-1,1:3))<0.001) && all(abs(dsgnVec(end,4:6)-dsgnVec(end-1,4:6))*180/pi<0.1)
+       break 
     end
-    x = x';
 end
 
-EulAng = x;
+
 
 end
 

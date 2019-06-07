@@ -1,7 +1,8 @@
 clc;clear;
 loadParams;
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
-
+% load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+load('C:\Users\mcobb\Google Drive\Mitchell-Research\NCSUWaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+format compact
 x0 = [0 0 0]';
 
 timeIndex = 3232;
