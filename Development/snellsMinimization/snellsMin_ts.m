@@ -4,16 +4,20 @@ load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_
 
 x0 = [0 0 0]';
 
-% timeIndex = 3232;
+timeIndex = 3232;
 
-timeStart = 1000;
-timeEnd = 1100;
+timeStart = 4140;
+timeEnd = 4200;
 
 length = timeEnd - timeStart;
 
+EulAng = cell(length,1);
+actualAng = cell(length,1);
 errorCoM = cell(length,1);
 errorEul = cell(length,1);
 index = 1;
+
+lineSearch = 'GoldenSection';
 
 for timeIndex = timeStart:timeEnd
 
@@ -33,30 +37,36 @@ for timeIndex = timeStart:timeEnd
 
     CoMPos = params.initCoMPosVec_cm.Value';
 
-    [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
+    [CoMPos,EulAng_rad,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
         rCentroidBotB,rCentroidSlant,uCentroidSide,...
         uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,lineSearch);
 
-%     CoMPos;
-    EulAng = EulAng.*180/pi;
+    CoMPos;
+    EulAng{index,1} = EulAng_rad.*180/pi;
+    
+    if strcmp(lineSearch,'ThreePoint')
+        EulAng{index,1} = mod(EulAng{index,1},360);
+    end
     
     roll_rad = tsc.roll_rad.Data(timeIndex);
     pitch_rad = tsc.pitch_rad.Data(timeIndex);
     yaw_rad = tsc.yaw_rad.Data(timeIndex);
-    actualAng = [roll_rad ; pitch_rad ; yaw_rad];
+    actualAng_rad = [roll_rad ; pitch_rad ; yaw_rad];
     
-    actualAng = actualAng.*180/pi;
+    actualAng{index,1} = actualAng_rad.*180/pi;
     
-    errorCoM{index,1} = abs(tsc.CoMPosVec_cm.Data(:,:,timeIndex)) - abs(CoMPos);
-    errorEul{index,1} = abs(actualAng) - abs(EulAng); 
+    errorCoM{index,1} = abs(tsc.CoMPosVec_cm.Data(:,:,timeIndex) - CoMPos);
+    errorEul{index,1} = abs(actualAng{index,1} - EulAng{index,1}); 
     
     index = index + 1;
 end
 
 %%
 
-powellsPlot(CoMPos, EulAng, tsc, params)
+ang = EulAng{end,1};
+
+powellsPlot(CoMPos, ang, tsc, params, timeEnd)
 
 %%
 

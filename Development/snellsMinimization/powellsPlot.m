@@ -1,10 +1,9 @@
-function powellsPlot(CoMPos, EulAng_deg, tsc, params)
+function powellsPlot(CoMPos, EulAng_deg, tsc, params, timeIndex)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
 close all
 
-timeIndex = 3232;
 rayLength = 50;
 
 % cameraPosVecs   = {'sideCamPosVec_cm','botCamPosVec_cm','slntCamPosVec_cm'};

@@ -1,7 +1,7 @@
 function [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
     rCentroidBotB,rCentroidSlant,uCentroidSide,...
     uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,lineSearch)
 
 %gradientDescentMin Summary of this function goes here
 %   Detailed explanation goes here
@@ -21,7 +21,7 @@ function [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroi
 
 x = x0;
 
-for ii = 1:10
+for ii = 1:5
     RGB = calculateRotationMatrix(x(1),x(2),x(3));
     RBG = RGB';
     
@@ -30,14 +30,14 @@ for ii = 1:10
         uCentroidBotA,uCentroidBotB,uCentroidSlant,RBG,...
         sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
    
-%     x = [x;0];
-    for jj = 1:10
+    for jj = 1:5
         x = powellsMethod(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
             rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,'FunctionHandle',@objJ);
-        Eul{jj,ii} = x(1:3)'.*180/pi;
+            sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,'FunctionHandle',@objJ,...
+            'LineSearchMethod',lineSearch)
+        Eul{jj,ii} = x'.*180/pi;
     end
-    x = x(1:3)';
+    x = x';
 end
 
 EulAng = x;

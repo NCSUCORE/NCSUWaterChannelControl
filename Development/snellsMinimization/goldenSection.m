@@ -31,7 +31,7 @@ addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
 addOptional(p,'DisplayOutput',false,@(s) islogical(s))
 addOptional(p,'MaxIterations',1000,@(s) isnumeric(s) && isscalar(s) && s>0)
 addOptional(p,'FunctionConvergence',0.0001,@(s) isnumeric(s) && isscalar(s) && s>=0)
-addOptional(p,'InputConvergence',0.0001,@(s) isnumeric(s) && isscalar(s) && s>=0)
+addOptional(p,'InputConvergence',0.01,@(s) isnumeric(s) && isscalar(s) && s>=0)
 addOptional(p,'StepTimeout',100,@(s) isnumeric(s) && isscalar(s))
 addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s)  && s>=1)
 addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
@@ -88,12 +88,13 @@ for ii = 1:p.Results.MaxIterations
     sMax = max([sl sr sOne sTwo]);
     if p.Results.DisplayOutput
         fprintf('%10f %10f %10f %10f %10f %10f %10f %10f %10f %10f \n',...
-            sl,fl,sOne,fOne,sTwo,fTwo,sr,fr,(sr-sl)/2,fHandle((sr-sl)/2,x0,S,CoMPos,...
+            sl,fl,sOne,fOne,sTwo,fTwo,sr,fr,mean([sr sl]),fHandle(mean([sr sl]),x0,S,CoMPos,...
             rCentroidSide,rCentroidBotA,rCentroidBotB,rCentroidSlant,...
             uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
             sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm))
     end
-    if abs((fMax-fMin)/fMin) <= p.Results.FunctionConvergence || ...
+    
+    if  abs((fMax-fMin)/fMin) <= p.Results.FunctionConvergence || ...
             abs((sMax-sMin)/initialRange) <= p.Results.InputConvergence
         if p.Results.DisplayOutput
             fprintf('\nSolution converged.  Stopping program.\n')
@@ -109,4 +110,10 @@ for ii = 1:p.Results.MaxIterations
     end
 end
 sLims = [sl sr];
+
+% if p.Results.DisplayOutput
+%     fprintf('\n%d\t%d\n',sLims)
+%     fprintf('\n%d\n',mean(sLims))
+% end
+
 end

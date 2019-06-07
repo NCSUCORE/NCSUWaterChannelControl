@@ -14,14 +14,6 @@ simulinkproject(fullfile(baseDir,'WaterChannelControl.prj'))
 fprintf('\nSetting working directory to output\n')
 cd(fullfile(baseDir,'output')) % Set the working directory
 
-% Load parameters structure into base workspace
-fprintf('\nLoading params struct\n')
-loadParams
-
-while ~ismember('params',evalin('base','who'))
-    loadParams
-end
-
 % Start timer for execution timeout if build not selected
 t = timer('ExecutionMode', 'singleShot', 'StartDelay', 10, 'TimerFcn', @pressEnter);
 start(t);
@@ -37,6 +29,14 @@ stop(t);
 delete(t);
 
 if strcmpi(answer,'y')
+    
+    % Load parameters structure into base workspace
+    fprintf('\nLoading params struct\n')
+    loadParams
+
+    while ~ismember('params',evalin('base','who'))
+        loadParams
+    end
     
     % Initialize controllers
     fprintf('\nLoading controller initialization\n')
