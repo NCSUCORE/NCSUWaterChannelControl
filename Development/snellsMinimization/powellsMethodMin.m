@@ -1,9 +1,9 @@
-function [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
+function [CoMPos,x] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
     rCentroidBotB,rCentroidSlant,uCentroidSide,...
     uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,lineSearch)
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
 
-%gradientDescentMin Summary of this function goes here
+%powellsMethodMin Summary of this function goes here
 %   Detailed explanation goes here
 
 % x0 = [0 0 0]';
@@ -19,7 +19,10 @@ function [CoMPos,EulAng,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroi
 %     rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
 %     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
 
-dsgnVec = [];
+dsgnVec = zeros(100,6);
+
+posConv = 0.1;
+angConv = 0.1;
 
 x = x0;
 for ii = 1:100
@@ -33,18 +36,16 @@ for ii = 1:100
 
     x = powellsMethod(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
         rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,'FunctionHandle',@objJ,...
-        'LineSearchMethod',lineSearch,'DisplayOutput',false);
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
    
-        dsgnVec(end+1,:) = [CoMPos(:)' x(:)'*180/pi];
+        dsgnVec(ii,:) = [CoMPos(:)' x(:)'*180/pi];
     
-    if ii>2 &&...
-            all(abs(dsgnVec(end,1:3)-dsgnVec(end-1,1:3))<0.001) && all(abs(dsgnVec(end,4:6)-dsgnVec(end-1,4:6))*180/pi<0.1)
+    if ii>2 && ...
+            all(abs(dsgnVec(end,1:3)-dsgnVec(end-1,1:3)) < posConv) && ...
+            all(abs(dsgnVec(end,4:6)-dsgnVec(end-1,4:6)) < angConv)
        break 
     end
 end
-
-
 
 end
 

@@ -1,13 +1,13 @@
 clc;clear;
 loadParams;
-% load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
-load('C:\Users\mcobb\Google Drive\Mitchell-Research\NCSUWaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+% load('C:\Users\mcobb\Google Drive\Mitchell-Research\NCSUWaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
 format compact
 x0 = [0 0 0]';
 
 timeIndex = 3232;
 
-timeStart = 4140;
+timeStart = 4200;
 timeEnd = 4200;
 
 length = timeEnd - timeStart;
@@ -18,7 +18,7 @@ errorCoM = cell(length,1);
 errorEul = cell(length,1);
 index = 1;
 
-lineSearch = 'GoldenSection';
+% lineSearch = 'GoldenSection';
 
 for timeIndex = timeStart:timeEnd
 
@@ -38,17 +38,20 @@ for timeIndex = timeStart:timeEnd
 
     CoMPos = params.initCoMPosVec_cm.Value';
 
-    [CoMPos,EulAng_rad,Eul] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
-        rCentroidBotB,rCentroidSlant,uCentroidSide,...
+    tic
+    [CoMPos,EulAng_rad] = powellsMethodMin(x0,CoMPos,rCentroidSide,...
+        rCentroidBotA,rCentroidBotB,rCentroidSlant,uCentroidSide,...
         uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,lineSearch);
-
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+    toc
+    
     CoMPos;
     EulAng{index,1} = EulAng_rad.*180/pi;
+    EulAng{1,1};
     
-    if strcmp(lineSearch,'ThreePoint')
-        EulAng{index,1} = mod(EulAng{index,1},360);
-    end
+%     if strcmp(lineSearch,'ThreePoint')
+%         EulAng{index,1} = mod(EulAng{index,1},360);
+%     end
     
     roll_rad = tsc.roll_rad.Data(timeIndex);
     pitch_rad = tsc.pitch_rad.Data(timeIndex);
@@ -62,6 +65,49 @@ for timeIndex = timeStart:timeEnd
     
     index = index + 1;
 end
+
+%%
+
+clc;clear;
+loadParams;
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+
+initialCoMPositionVec_cm = params.initCoMPosVec_cm.Value';
+initialEulerAngles_rad = [0 0 0]';
+
+timeStart = 4190;
+timeEnd = 4200;
+index = 1;
+
+length = timeEnd - timeStart;
+
+for timeIndex = timeStart:timeEnd
+
+    rCentroidSide(index,:) = tsc.rCentroidSide.Data(:,:,timeIndex);
+    rCentroidBotA(index,:) = tsc.rCentroidBotA.Data(:,:,timeIndex);
+    rCentroidBotB(index,:) = tsc.rCentroidBotB.Data(:,:,timeIndex);
+    rCentroidSlant(index,:) = tsc.rCentroidSlant.Data(:,:,timeIndex);
+
+    uCentroidSide(index,:) = tsc.uCentroidSide.Data(:,:,timeIndex);
+    uCentroidBotA(index,:) = tsc.uCentroidBotA.Data(:,:,timeIndex);
+    uCentroidBotB(index,:) = tsc.uCentroidBotB.Data(:,:,timeIndex);
+    uCentroidSlant(index,:) = tsc.uCentroidSlant.Data(:,:,timeIndex);
+    
+    index = index + 1;
+end
+
+rSide = timeseries(rCentroidSide);
+rBotA = timeseries(rCentroidBotA);
+rBotB = timeseries(rCentroidBotB);
+rSlant = timeseries(rCentroidSlant);
+uSide = timeseries(uCentroidSide);
+uBotA = timeseries(uCentroidBotA);
+uBotB = timeseries(uCentroidBotB);
+uSlant = timeseries(uCentroidSlant);
+
+tic
+sim('powellsMethodMin_th')
+toc
 
 %%
 

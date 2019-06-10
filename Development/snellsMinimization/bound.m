@@ -1,32 +1,34 @@
 function [sLeft,sRight] = bound(s0,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,varargin)
+    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,fHandle)
 
-p = inputParser;
+% p = inputParser;
+% 
+% % Number of iterations before stopping attempt to tune step size
+% addOptional(p,'StepTimeout',1000,@(s) isnumeric(s) && isscalar(s))
+% % How much to increase the step size at every iteration
+% addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s) && s>=1)
+% % Number of iterations before quitting bounding phase
+% addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
+% % Handle of the function that you want to minimize
+% addOptional(p,'FunctionHandle',@objJ,@(s) isa(s,'function_handle'))
+% % Initial point/guess
+% addRequired(p,'s0',@(s) isnumeric(s) && isvector(s))
+% 
+% addRequired(p,'x0',@(s) isnumeric(s) && isvector(s))
+% % Step size
+% addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
+% 
+% parse(p,s0,x0,stepSize,varargin{:})
+% 
+% fHandle  = p.Results.FunctionHandle;
+% stepSize = p.Results.StepSize;
+% s0       = p.Results.s0;
+% x0       = p.Results.x0;
 
-% Number of iterations before stopping attempt to tune step size
-addOptional(p,'StepTimeout',1000,@(s) isnumeric(s) && isscalar(s))
-% How much to increase the step size at every iteration
-addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s) && s>=1)
-% Number of iterations before quitting bounding phase
-addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
-% Handle of the function that you want to minimize
-addOptional(p,'FunctionHandle',@objJ,@(s) isa(s,'function_handle'))
-% Initial point/guess
-addRequired(p,'s0',@(s) isnumeric(s) && isvector(s))
+sign = 1;
 
-addRequired(p,'x0',@(s) isnumeric(s) && isvector(s))
-% Step size
-addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
-
-parse(p,s0,x0,stepSize,varargin{:})
-
-fHandle  = p.Results.FunctionHandle;
-stepSize = p.Results.StepSize;
-s0       = p.Results.s0;
-x0       = p.Results.x0;
-
-for tryCount = 1:p.Results.StepTimeout
+for tryCount = 1:1000
     if fHandle(s0-stepSize,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
             rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
             sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) >= ...
@@ -60,8 +62,9 @@ for tryCount = 1:p.Results.StepTimeout
 end
 
 sCurrent = s0;
-for ii = 0:p.Results.BoundingTimeout-1
-    sRight = sCurrent + sign*stepSize*p.Results.StepSizeMultiplier^ii;
+for ii = 0:999
+    sRight = sCurrent + sign*stepSize*2^ii;
+    sLeft = sCurrent;
     if fHandle(sRight,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
             rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
             sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm) > ...
