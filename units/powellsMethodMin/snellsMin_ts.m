@@ -7,7 +7,7 @@ x0 = [0 0 0]';
 
 timeIndex = 3232;
 
-timeStart = 4200;
+timeStart = 4180;
 timeEnd = 4200;
 
 length = timeEnd - timeStart;
@@ -43,7 +43,7 @@ for timeIndex = timeStart:timeEnd
         rCentroidBotA,rCentroidBotB,rCentroidSlant,uCentroidSide,...
         uCentroidBotA,uCentroidBotB,uCentroidSlant,...
         sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
-    toc
+    time(index) = toc;
     
     CoMPos;
     EulAng{index,1} = EulAng_rad.*180/pi;
@@ -83,31 +83,31 @@ length = timeEnd - timeStart;
 
 for timeIndex = timeStart:timeEnd
 
-    rCentroidSide(index,:) = tsc.rCentroidSide.Data(:,:,timeIndex);
-    rCentroidBotA(index,:) = tsc.rCentroidBotA.Data(:,:,timeIndex);
-    rCentroidBotB(index,:) = tsc.rCentroidBotB.Data(:,:,timeIndex);
-    rCentroidSlant(index,:) = tsc.rCentroidSlant.Data(:,:,timeIndex);
+    rCentroidSide = tsc.rCentroidSide.Data(:,:,timeIndex);
+    rCentroidBotA = tsc.rCentroidBotA.Data(:,:,timeIndex);
+    rCentroidBotB = tsc.rCentroidBotB.Data(:,:,timeIndex);
+    rCentroidSlant = tsc.rCentroidSlant.Data(:,:,timeIndex);
 
-    uCentroidSide(index,:) = tsc.uCentroidSide.Data(:,:,timeIndex);
-    uCentroidBotA(index,:) = tsc.uCentroidBotA.Data(:,:,timeIndex);
-    uCentroidBotB(index,:) = tsc.uCentroidBotB.Data(:,:,timeIndex);
-    uCentroidSlant(index,:) = tsc.uCentroidSlant.Data(:,:,timeIndex);
+    uCentroidSide = tsc.uCentroidSide.Data(:,:,timeIndex);
+    uCentroidBotA = tsc.uCentroidBotA.Data(:,:,timeIndex);
+    uCentroidBotB = tsc.uCentroidBotB.Data(:,:,timeIndex);
+    uCentroidSlant = tsc.uCentroidSlant.Data(:,:,timeIndex);
+    
+    tic
+    sim('powellsMethodMin_th')
+    time(index) = toc;
     
     index = index + 1;
 end
 
-rSide = timeseries(rCentroidSide);
-rBotA = timeseries(rCentroidBotA);
-rBotB = timeseries(rCentroidBotB);
-rSlant = timeseries(rCentroidSlant);
-uSide = timeseries(uCentroidSide);
-uBotA = timeseries(uCentroidBotA);
-uBotB = timeseries(uCentroidBotB);
-uSlant = timeseries(uCentroidSlant);
-
-tic
-sim('powellsMethodMin_th')
-toc
+% rSide = timeseries(rCentroidSide);
+% rBotA = timeseries(rCentroidBotA);
+% rBotB = timeseries(rCentroidBotB);
+% rSlant = timeseries(rCentroidSlant);
+% uSide = timeseries(uCentroidSide);
+% uBotA = timeseries(uCentroidBotA);
+% uBotB = timeseries(uCentroidBotB);
+% uSlant = timeseries(uCentroidSlant);
 
 %%
 

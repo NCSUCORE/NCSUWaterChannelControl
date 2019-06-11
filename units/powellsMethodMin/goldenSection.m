@@ -44,8 +44,8 @@ function sLims = goldenSection(s0,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentr
 % s0       = p.Results.s0;
 % % x0       = p.Results.x0;
 
-functionConv = 0.1;
-inputConv = 0.1;
+% functionConv = 0.001;
+inputConv = 0.001;
 
 % Bounding Phase
 [sl,sr] = bound(s0,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
@@ -94,7 +94,7 @@ for ii = 1:1000
 %             sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm))
 %     end
     
-    if  abs((fMax-fMin)/fMin) <= functionConv || ...
+    if  abs(sMax-sMin) <= inputConv || ...
             abs((sMax-sMin)/initialRange) <= inputConv
 %         if p.Results.DisplayOutput
 %             fprintf('\nSolution converged.  Stopping program.\n')

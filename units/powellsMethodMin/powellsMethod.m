@@ -29,7 +29,7 @@ function desVars = powellsMethod(x0,CoMPos,rCentroidSide,rCentroidBotA,...
 % parse(p,x0,varargin{:})
 
 %% The actual optimization
-inputConv = 0.1;
+inputConv = 0.001;
 
 % Matrix to store search directions for the current cycle
 S = eye(numel(x0));
