@@ -1,14 +1,17 @@
-clc;clear;
+% clc;clear;
 loadParams;
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+% load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
 % load('C:\Users\mcobb\Google Drive\Mitchell-Research\NCSUWaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_23_May_2019_11_20_54.mat');
+
 format compact
 x0 = [0 0 0]';
 
-timeIndex = 3232;
+% timeIndex = 500;
 
-timeStart = 4180;
-timeEnd = 4200;
+timeStart = 500;
+timeEnd = 510;
 
 length = timeEnd - timeStart;
 
@@ -45,9 +48,9 @@ for timeIndex = timeStart:timeEnd
         sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
     time(index) = toc;
     
-    CoMPos;
+    CoMPos
     EulAng{index,1} = EulAng_rad.*180/pi;
-    EulAng{1,1};
+    EulAng{index,1}
     
 %     if strcmp(lineSearch,'ThreePoint')
 %         EulAng{index,1} = mod(EulAng{index,1},360);
@@ -70,13 +73,18 @@ end
 
 clc;clear;
 loadParams;
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+% load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_22_May_2019_18_55_30.mat');
+
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_23_May_2019_11_20_54.mat');
 
 initialCoMPositionVec_cm = params.initCoMPosVec_cm.Value';
 initialEulerAngles_rad = [0 0 0]';
 
-timeStart = 4190;
-timeEnd = 4200;
+% timeStart = 4190;
+% timeEnd = 4200;
+
+timeStart = 500;
+timeEnd = 510;
 index = 1;
 
 length = timeEnd - timeStart;
