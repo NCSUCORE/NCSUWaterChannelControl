@@ -1,15 +1,12 @@
-function [min] = powellsMethodFcn(alpha,x,S,CoMPos,rCentroidSide,rCentroidBotA,...
-    rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,...
-    uCentroidSlant,sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
+function [min] = powellsMethodFcn(alpha,x,S,CoMPos,rCentroid,uCentroid,...
+    bodyFixedVec)
 
 %powellsMethodFcn Summary of this function goes here
 %   Detailed explanation goes here
 
 % x = (x + alpha*S);
 
-min = objJ((x + alpha*S)',CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+min = objJ((x + alpha*S)',CoMPos,rCentroid,uCentroid,bodyFixedVec);
 
 end
 

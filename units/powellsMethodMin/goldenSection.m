@@ -1,6 +1,5 @@
-function sLims = goldenSection(s0,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,fHandle)
+function sLims = goldenSection(s0,x0,S,CoMPos,rCentroid,uCentroid,...
+    bodyFixedVec,stepSize,fHandle)
 % Function to implement golden section to minimize a scalar function
 %
 % Required Inputs
@@ -48,19 +47,13 @@ function sLims = goldenSection(s0,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentr
 inputConv = 0.001;
 
 % Bounding Phase
-[sl,sr] = bound(s0,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,stepSize,fHandle);
+[sl,sr] = bound(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec,stepSize,fHandle);
 
 % Begin golden section
 tau = 1 - 0.38197;
 initialRange = abs(sr-sl);
-fl = fHandle(sl,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
-fr = fHandle(sr,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-    rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+fl = fHandle(sl,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+fr = fHandle(sr,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
 
 % Print column headers to command window for output
 % if p.Results.DisplayOutput
@@ -75,12 +68,8 @@ fr = fHandle(sr,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
 for ii = 1:1000
     sTwo = (1-tau)*sl+tau*sr;
     sOne = tau*sl+(1-tau)*sr;
-    fOne = fHandle(sOne,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-        rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
-    fTwo = fHandle(sTwo,x0,S,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-        rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+    fOne = fHandle(sOne,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+    fTwo = fHandle(sTwo,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
     fMin = min([fl fr fOne fTwo]);
     fMax = max([fl fr fOne fTwo]);
     sMin = min([sl sr sOne sTwo]);

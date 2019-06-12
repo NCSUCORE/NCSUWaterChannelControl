@@ -1,9 +1,10 @@
 % clc; clear;
 loadParams;
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_23_May_2019_11_20_54.mat');
+% load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_23_May_2019_11_20_54.mat');
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_12_Jun_2019_11_07_53.mat')
 
-timeStart = 500;
-timeEnd = 501;
+timeStart = 800;
+timeEnd = 801;
 index = 1;
 
 length = timeEnd - timeStart;
@@ -30,7 +31,24 @@ for ii = 1:index - 1
     
 end
 
-EulAng_deg = [roll_deg.Data(1), pitch_deg.Data(1), yaw_deg.Data(1)]';
+% EulAng_deg = [roll_deg.Data(1), pitch_deg.Data(1), yaw_deg.Data(1)]';
 
-powellsPlot(CoMPos.Data(1,:), EulAng_deg, tsc, params, 1)
-    
+timeInd = 1;
+CoMPos = tsc.CoMPosVec_cm.Data(:,:,timeInd)
+EulAng_rad = [tsc.roll_rad.Data(timeInd);
+              tsc.pitch_rad.Data(timeInd);
+              tsc.yaw_rad.Data(timeInd)];
+          
+EulAng_deg = EulAng_rad.*180/pi
+          
+eul = mod(EulAng_deg,360)
+
+try
+    clf(fig_on);
+catch
+end
+fig_on = powellsPlot(CoMPos, EulAng_rad, tsc, params, timeInd, 2);
+
+%%
+
+tsc.sideDotCoords.Data(:,:,timeStart)
