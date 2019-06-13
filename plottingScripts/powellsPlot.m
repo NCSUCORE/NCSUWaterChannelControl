@@ -1,25 +1,37 @@
-function powellsPlot(CoMPos, EulAng_deg, tsc, params, timeIndex)
+function [figHandle] = powellsPlot(CoMPos, EulAng_rad, tsc, params, timeIndex, figNum)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
-close all
+% close all
 
 rayLength = 50;
 
-% cameraPosVecs   = {'sideCamPosVec_cm','botCamPosVec_cm','slntCamPosVec_cm'};
+cameraPosVecs   = {'sideCamPosVec_cm','botCamPosVec_cm','slntCamPosVec_cm'};
+cameraNames     = {'sideCamPosVec','botCamPosVec','slntCamPosVec'};
 unitVecNames    = {'uCentroidSide','uCentroidBotA','uCentroidBotB','uCentroidSlant'};
 rayBaseVecNames = {'rCentroidSide','rCentroidBotA','rCentroidBotB','rCentroidSlant'};
 % rayOutVecNames = {'rogGSide','rogGBotA','rogGBotB','rogGSlant'};
 dotVecBFNames  = {'sideDotPosVec_cm','botADotPosVec_cm','botBDotPosVec_cm'};
+dotBFName = {'sideDotPosVec','botADotPosVec','botBDotPosVec'};
+marker = {'o','*','+','.'};
 
-figure
+figHandle = figure(figNum);
 set(gca,'NextPlot','add')
+for ii = 1:length(cameraPosVecs)
+    scatter3(...
+       params.(cameraPosVecs{ii}).Value(1),...
+       params.(cameraPosVecs{ii}).Value(2),...
+       params.(cameraPosVecs{ii}).Value(3),...
+       'Marker',marker{ii},'CData',[0 0 0],'DisplayName',cameraNames{ii});
+end
+
+
 for ii = 1:length(unitVecNames)
     scatter3(...
        tsc.(rayBaseVecNames{ii}).Data(1,:,timeIndex),...
        tsc.(rayBaseVecNames{ii}).Data(2,:,timeIndex),...
        tsc.(rayBaseVecNames{ii}).Data(3,:,timeIndex),...
-       'Marker','o','CData',[0 0 1],'DisplayName','Ray Inside');
+       'Marker',marker{ii},'CData',[0 0 1],'DisplayName',rayBaseVecNames{ii});
    plot3(...
        [tsc.(rayBaseVecNames{ii}).Data(1,:,timeIndex) tsc.(rayBaseVecNames{ii}).Data(1,:,timeIndex)+rayLength*tsc.(unitVecNames{ii}).Data(1,:,timeIndex)],...
        [tsc.(rayBaseVecNames{ii}).Data(2,:,timeIndex) tsc.(rayBaseVecNames{ii}).Data(2,:,timeIndex)+rayLength*tsc.(unitVecNames{ii}).Data(2,:,timeIndex)],...
@@ -33,9 +45,10 @@ scatter3(...
         CoMPos(3),...
         'Marker','x','CData',[0 0 1],'DisplayName','CoM Pos');
 
-EulAng_rad = EulAng_deg.*pi/180;
 RGB = calculateRotationMatrix(EulAng_rad(1),EulAng_rad(2),EulAng_rad(3));
 RBG = RGB';
+
+line = {'-','--',':'};
 
 for ii = 1:length(dotVecBFNames)
 %     scatter3(...
@@ -50,16 +63,26 @@ for ii = 1:length(dotVecBFNames)
         [CoMPos(1) CoMPos(1)+dotVecGF(1)],...
         [CoMPos(2) CoMPos(2)+dotVecGF(2)],...
         [CoMPos(3) CoMPos(3)+dotVecGF(3)],...
-       'LineStyle','--','LineWidth',1,'Color','r','DisplayName','CoM to Dot');
+       'LineStyle',line{ii},'LineWidth',1,'Color','r','DisplayName',dotBFName{ii});
 end
+
+names = {'x','y','z'};
 
 for ii = 1:3
     plot3(...
         [CoMPos(1) CoMPos(1)+10*RBG(1,ii)],...
         [CoMPos(2) CoMPos(2)+10*RBG(2,ii)],...
         [CoMPos(3) CoMPos(3)+10*RBG(3,ii)],...
-       'LineStyle','--','LineWidth',1,'Color','g','DisplayName','Body Vectors');
+       'LineStyle',line{ii},'LineWidth',1,'Color','g','DisplayName',names{ii});
 end
+
+legend
+grid on
+axis equal
+axis square
+xlabel('x')
+ylabel('y')
+zlabel('z')
 
 end
 

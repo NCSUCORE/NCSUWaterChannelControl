@@ -1,7 +1,4 @@
-function [CoMPos,x] = powellsMethodMin(x0,CoMPos,rCentroidSide,rCentroidBotA,...
-    rCentroidBotB,rCentroidSlant,uCentroidSide,...
-    uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-    sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm)
+function [CoMPos,EulerAng] = powellsMethodMin(initEulerAng,inputBus,snells)
 
 %powellsMethodMin Summary of this function goes here
 %   Detailed explanation goes here
@@ -24,21 +21,26 @@ dsgnVec = zeros(100,6);
 posConv = 0.1;
 angConv = 0.1;
 
-x = x0;
+rCentroid = zeros(3,length(snells));
+uCentroid = zeros(3,length(snells));
+bodyFixedVec = zeros(3,length(snells));
+
+for ii = 1:length(snells)
+    rCentroid(:,ii) = inputBus(ii).insideGlassVec(:);
+    uCentroid(:,ii) = inputBus(ii).unitVec(:);
+    bodyFixedVec(:,ii) = snells(ii).bodyFixedVec(:);
+end
+
+EulerAng = initEulerAng;
 for ii = 1:100
-    RGB = calculateRotationMatrix(x(1),x(2),x(3));
+    RGB = calculateRotationMatrix(EulerAng(1),EulerAng(2),EulerAng(3));
     RBG = RGB';
     
-    CoMPos = snellLeastSquaresPosition(rCentroidSide,rCentroidBotA,...
-        rCentroidBotB,rCentroidSlant,uCentroidSide,...
-        uCentroidBotA,uCentroidBotB,uCentroidSlant,RBG,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+    CoMPos = snellLeastSquaresPosition(rCentroid,uCentroid,RBG,bodyFixedVec);
 
-    x = powellsMethod(x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-        rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+    EulerAng = powellsMethod(EulerAng,CoMPos,rCentroid,uCentroid,bodyFixedVec);
    
-        dsgnVec(ii,:) = [CoMPos(:)' x(:)'*180/pi];
+    dsgnVec(ii,:) = [CoMPos(:)' EulerAng(:)'*180/pi];
     
     if ii>2 && ...
             all(abs(dsgnVec(end,1:3)-dsgnVec(end-1,1:3)) < posConv) && ...
