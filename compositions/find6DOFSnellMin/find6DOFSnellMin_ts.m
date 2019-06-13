@@ -50,5 +50,14 @@ end
 fig_on = powellsPlot(CoMPos, EulAng_rad, tsc, params, timeInd, 2);
 
 %%
+clc;clear;
 
-tsc.sideDotCoords.Data(:,:,timeStart)
+loadParams;
+createCoordinateCtrlBus;
+createRayTraceCtrlBus;
+createSnellsMinParams;
+
+tic
+sim('find6DOFSnellMin9_th');
+toc;
+

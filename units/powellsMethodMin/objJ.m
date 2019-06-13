@@ -11,9 +11,9 @@ RBG = RGB';
 J = 0;
 
 for ii = 1:length(rCentroid)
-    d = uCentroid(:,ii)'*(CoMPos - RBG*bodyFixedVec - rCentroid(:,ii));
-    e = dot( ((CoMPos + RBG*bodyFixedVec) - (rCentroid(:,ii) + uCentroid(:,ii)*d)),...
-             ((CoMPos + RBG*bodyFixedVec) - (rCentroid(:,ii) + uCentroid(:,ii)*d)) );
+    d = uCentroid(:,ii)'*(CoMPos - RBG*bodyFixedVec(:,ii) - rCentroid(:,ii));
+    e = dot( ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d)),...
+             ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d)) );
 
     J = J + e;
 end

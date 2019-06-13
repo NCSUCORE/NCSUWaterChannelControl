@@ -25,28 +25,46 @@ index = 1;
 
 for timeIndex = timeStart:timeEnd
 
-    rCentroidSide = tsc.rCentroidSide.Data(:,:,timeIndex);
-    rCentroidBotA = tsc.rCentroidBotA.Data(:,:,timeIndex);
-    rCentroidBotB = tsc.rCentroidBotB.Data(:,:,timeIndex);
-    rCentroidSlant = tsc.rCentroidSlant.Data(:,:,timeIndex);
+    rCentroid1 = tsc.rCentroidSide.Data(:,:,timeIndex);
+    rCentroid2 = tsc.rCentroidBotA.Data(:,:,timeIndex);
+    rCentroid3 = tsc.rCentroidBotB.Data(:,:,timeIndex);
+    rCentroid4 = tsc.rCentroidSlant.Data(:,:,timeIndex);
+    rCentroid5 = tsc.rCentroidSide.Data(:,:,timeIndex);
+    rCentroid6 = tsc.rCentroidBotA.Data(:,:,timeIndex);
+    rCentroid7 = tsc.rCentroidBotB.Data(:,:,timeIndex);
+    rCentroid8 = tsc.rCentroidSlant.Data(:,:,timeIndex);
+    rCentroid9 = tsc.rCentroidSide.Data(:,:,timeIndex);
 
-    uCentroidSide = tsc.uCentroidSide.Data(:,:,timeIndex);
-    uCentroidBotA = tsc.uCentroidBotA.Data(:,:,timeIndex);
-    uCentroidBotB = tsc.uCentroidBotB.Data(:,:,timeIndex);
-    uCentroidSlant = tsc.uCentroidSlant.Data(:,:,timeIndex);
+    rCentroid = [rCentroid1,rCentroid2,rCentroid3,rCentroid4,rCentroid5,...
+             rCentroid6,rCentroid7,rCentroid8,rCentroid9];
+    
+    uCentroid1 = tsc.uCentroidSide.Data(:,:,timeIndex);
+    uCentroid2 = tsc.uCentroidBotA.Data(:,:,timeIndex);
+    uCentroid3 = tsc.uCentroidBotB.Data(:,:,timeIndex);
+    uCentroid4 = tsc.uCentroidSlant.Data(:,:,timeIndex);
+    uCentroid5 = tsc.uCentroidSide.Data(:,:,timeIndex);
+    uCentroid6 = tsc.uCentroidBotA.Data(:,:,timeIndex);
+    uCentroid7 = tsc.uCentroidBotB.Data(:,:,timeIndex);
+    uCentroid8 = tsc.uCentroidSlant.Data(:,:,timeIndex);
+    uCentroid9 = tsc.uCentroidSlant.Data(:,:,timeIndex);
 
-    sideDotPosVec_cm = params.sideDotPosVec_cm.Value';
-    botADotPosVec_cm = params.botADotPosVec_cm.Value';
-    botBDotPosVec_cm = params.botBDotPosVec_cm.Value';
+    uCentroid = [uCentroid1,uCentroid2,uCentroid3,uCentroid4,uCentroid5,...
+             uCentroid6,uCentroid7,uCentroid8,uCentroid9];
+         
+    for ii = 1:9
+        inputBus(ii).insideGlassVec = rCentroid(ii); 
+        inputBus(ii).unitVec = uCentroid(ii);
+    end
 
-    CoMPos = params.initCoMPosVec_cm.Value';
+    bodyFixedVec = [snells(1).bodyFixedVec,snells(2).bodyFixedVec,snells(3).bodyFixedVec,...
+                snells(4).bodyFixedVec,snells(5).bodyFixedVec,snells(6).bodyFixedVec,...
+                snells(7).bodyFixedVec,snells(8).bodyFixedVec,snells(9).bodyFixedVec];
+
+    initEulerAng = params.initEulerAng_deg.Value';
 
     tic
-    [CoMPos,EulAng_rad] = powellsMethodMin(x0,CoMPos,rCentroidSide,...
-        rCentroidBotA,rCentroidBotB,rCentroidSlant,uCentroidSide,...
-        uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
-    time(index) = toc;
+    [CoMPos,EulAng_rad] = powellsMethodMin(initEulerAng,inputBus,snells);
+    time(index) = toc
     
     CoMPos
     EulAng{index,1} = EulAng_rad.*180/pi;
@@ -150,7 +168,6 @@ powellsPlot(CoMPos, ang, tsc, params, timeEnd)
 % EulAng = EulAng.*180/pi
 
 %%
-
 
 % yPos = 0;
 % zPos = 0;
