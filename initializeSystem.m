@@ -46,6 +46,10 @@ if strcmpi(answer,'y')
         controllers_init
     end
     
+    createSnellsMinParams;
+    createRayTraceCtrlBus;
+    createCoordinateCtrlBus;
+    
     fprintf('\nOpening all models\n')
     % Window positions determined from using get_param(gcs,'location')
     windowPositions = [ -6     0   775   418;...
