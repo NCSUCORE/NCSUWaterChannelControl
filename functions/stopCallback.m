@@ -65,8 +65,8 @@ for jj = 1:10000 % Use a for loop with break condition instead of while loop
             tsc.(name).Data = nan([matches(1).Dimensions 1 numel(tsc.(name).Time)]);
             for ii = 1:numel(matches) % For each data set with a matching name
                 % Get the index associated with it
-                index = regexp(matches(ii).Name,'(\d*)','match');
-                index = str2double(index{1});
+                index = regexp(matches(ii).Name,'\(\d*\)','match');
+                index = str2double(index{1}(2:end-1));
                 % Take the data and stuff it into the appropriate plate in tsc
                 tsc.(name).Data(index,:,:) = matches(ii).Values.Data;
             end
@@ -98,6 +98,7 @@ for jj = 1:10000 % Use a for loop with break condition instead of while loop
             tsc.(name).UserData.BlockPath = signalObjs(idx).BlockPath;
             tsc.(name).UserData.PortIndex = signalObjs(idx).PortIndex;
             toDoList(matchMask) = false;
+           
     end
     
     if all(toDoList==0)
