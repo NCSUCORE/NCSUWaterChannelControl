@@ -30,6 +30,9 @@ inputConv = 0.001;
 
 % Matrix to store search directions for the current cycle
 S = eye(numel(x0));
+% S = [0 0 1;...
+%      0 1 0;...
+%      1 0 0;];
 
 % Matrix to store points for the cycle
 X0 = reshape(x0,[1 numel(x0)]);

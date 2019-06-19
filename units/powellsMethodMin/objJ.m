@@ -4,11 +4,14 @@ function J = objJ(EulAng,CoMPos,rCentroid,uCentroid,bodyFixedVec)
 %   Detailed explanation goes here
 
 % x = [roll, pitch, yaw]
+J = 0;
 
 RGB = calculateRotationMatrix(EulAng(1),EulAng(2),EulAng(3));
 RBG = RGB';
 
-J = 0;
+% if (abs(RBG(3,3)) < abs(RBG(3,1)) || abs(RBG(3,3)) < abs(RBG(3,2)))
+%     J = 10^6;
+% end
 
 for ii = 1:length(rCentroid)
     d = uCentroid(:,ii)'*(CoMPos - RBG*bodyFixedVec(:,ii) - rCentroid(:,ii));

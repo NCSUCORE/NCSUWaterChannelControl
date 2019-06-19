@@ -33,10 +33,10 @@ botDot3Time = timeseries(botDot3);
 
 %%
 
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_18_Jun_2019_17_24_48.mat')
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_19_Jun_2019_13_33_01.mat')
 
-timeStart = 900;
-timeEnd = 910;
+timeStart = 999;
+timeEnd = 1000;
 index = 1;
 
 len = timeEnd - timeStart;

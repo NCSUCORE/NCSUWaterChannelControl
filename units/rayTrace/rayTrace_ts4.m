@@ -273,7 +273,7 @@ createSnellsMinParams;
 createRayTraceCtrlBus;
 createCoordinateCtrlBus;
 loadParams;
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_18_Jun_2019_17_46_04.mat')
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_19_Jun_2019_11_56_45.mat')
 timeIndex = 1000;
 
 camPosVec         = snells(7).camPosVec;

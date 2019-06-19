@@ -21,11 +21,11 @@ dsgnVec = zeros(100,6);
 posConv = 0.1;
 angConv = 0.1;
 
-rCentroid = zeros(3,length(snells));
-uCentroid = zeros(3,length(snells));
-bodyFixedVec = zeros(3,length(snells));
+rCentroid = zeros(3,3);
+uCentroid = zeros(3,3);
+bodyFixedVec = zeros(3,3);
 
-for ii = 1:length(snells)
+for ii = 1:3
     rCentroid(:,ii) = inputBus(ii).insideGlassVec(:);
     uCentroid(:,ii) = inputBus(ii).unitVec(:);
     bodyFixedVec(:,ii) = snells(ii).bodyFixedVec(:);
@@ -47,6 +47,7 @@ for ii = 1:100
             all(abs(dsgnVec(end,4:6)-dsgnVec(end-1,4:6)) < angConv)
        break 
     end
+
 end
 
 end

@@ -1,29 +1,32 @@
-timeInd = 900;
+timeInd = 2;
 
-rayLength = 50;
+rayLength = 30;
 % try
 %     clf(figHandle)
 % catch
 % end
 
 cameraNames     = {'Camera 3','Camera 4','Camera 5'};
-unitVecNames    = {'cam1Dot1UnitVec','cam1Dot2UnitVec','cam1Dot3UnitVec',...
-                   'cam2Dot1UnitVec','cam2Dot2UnitVec','cam2Dot3UnitVec'...
-                   'cam3Dot1UnitVec','cam3Dot2UnitVec','cam3Dot3UnitVec'};
-rayInVecNames = {'cam1Dot1InVec','cam1Dot2InVec','cam1Dot3InVec',...
-                 'cam2Dot1InVec','cam2Dot2InVec','cam2Dot3InVec'...
-                 'cam3Dot1InVec','cam3Dot2InVec','cam3Dot3InVec'};
+unitVecNames    = {'cam1Dot1UnitVec','cam1Dot2UnitVec','cam1Dot3UnitVec'};
+%                    'cam2Dot1UnitVec','cam2Dot2UnitVec','cam2Dot3UnitVec'...
+%                    'cam3Dot1UnitVec','cam3Dot2UnitVec','cam3Dot3UnitVec'};
+rayInVecNames = {'cam1Dot1InVec','cam1Dot2InVec','cam1Dot3InVec'};
+%                  'cam2Dot1InVec','cam2Dot2InVec','cam2Dot3InVec'...
+%                  'cam3Dot1InVec','cam3Dot2InVec','cam3Dot3InVec'};
 rayOutVecNames = {'cam1Dot1OutVec','cam2Dot1OutVec','cam3Dot1OutVec'};
 dotBFName = {'portDot','starboardDot','aftDot'};
 marker = {'o','*','+','.'};
 names = {'x','y','z'}; 
 line = {'-','--',':'};
+colors = {'c','m','k'};
+rayNames = {'Port Dot Ray','Starboard Dot Ray','Aft Dot Ray'};
 
 figHandle = figure(1);
 set(gca,'NextPlot','add')
 
 legend
 grid on
+axis equal
 xlabel('x')
 ylabel('y')
 zlabel('z')
@@ -62,7 +65,7 @@ scatter3(...
         tsc.CoMPos.Data(3,:,timeInd),...
         'Marker','x','CData',[0 0 1],'DisplayName','CoM Pos');
 
-for ii = 1:length(rayOutVecNames)
+for ii = 1:1
     scatter3(...
        tsc.(rayOutVecNames{ii}).Data(1,:,timeInd),...
        tsc.(rayOutVecNames{ii}).Data(2,:,timeInd),...
@@ -71,20 +74,25 @@ for ii = 1:length(rayOutVecNames)
 end
 
 index = 0;
+ind = 1;
 for ii = 1:length(unitVecNames)
     if mod(ii,3) == 1
         index = index + 1;
+        ind = 1;
     end
     scatter3(...
        tsc.(rayInVecNames{ii}).Data(1,:,timeInd),...
        tsc.(rayInVecNames{ii}).Data(2,:,timeInd),...
        tsc.(rayInVecNames{ii}).Data(3,:,timeInd),...
        'Marker',marker{index},'CData',[0 0 1],'DisplayName',rayInVecNames{ii});
-   plot3(...
+
+    plot3(...
        [tsc.(rayInVecNames{ii}).Data(1,:,timeInd) tsc.(rayInVecNames{ii}).Data(1,:,timeInd)+rayLength*tsc.(unitVecNames{ii}).Data(1,:,timeInd)],...
        [tsc.(rayInVecNames{ii}).Data(2,:,timeInd) tsc.(rayInVecNames{ii}).Data(2,:,timeInd)+rayLength*tsc.(unitVecNames{ii}).Data(2,:,timeInd)],...
        [tsc.(rayInVecNames{ii}).Data(3,:,timeInd) tsc.(rayInVecNames{ii}).Data(3,:,timeInd)+rayLength*tsc.(unitVecNames{ii}).Data(3,:,timeInd)],...
-       'LineStyle','--','LineWidth',1,'Color','k','DisplayName','Ray Line');
+       'LineStyle','--','LineWidth',1,'Color',colors{ind},'DisplayName',rayNames{ind});
+
+   ind = ind + 1;
 end
 
 try
@@ -127,4 +135,4 @@ for ii = 1:length(dotBFName)
 end
 
 axis equal
-axis square
+% axis square
