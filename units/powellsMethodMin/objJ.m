@@ -9,12 +9,8 @@ J = 0;
 RGB = calculateRotationMatrix(EulAng(1),EulAng(2),EulAng(3));
 RBG = RGB';
 
-% if (abs(RBG(3,3)) < abs(RBG(3,1)) || abs(RBG(3,3)) < abs(RBG(3,2)))
-%     J = 10^6;
-% end
-
 for ii = 1:length(rCentroid)
-    d = uCentroid(:,ii)'*(CoMPos - RBG*bodyFixedVec(:,ii) - rCentroid(:,ii));
+    d = uCentroid(:,ii)'*(CoMPos + RBG*bodyFixedVec(:,ii) - rCentroid(:,ii));
     e = dot( ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d)),...
              ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d)) );
 

@@ -1,4 +1,4 @@
-function [figHandle] = powellsPlot(CoMPos, EulAng_rad, rCentroid, ...
+function [figHandle] = powellsPlot(snells, CoMPos, EulAng_rad, rCentroid, ...
     uCentroid, figNum)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
@@ -9,8 +9,12 @@ rayLength = 50;
 
 % cameraPosVecs   = {'sideCamPosVec_cm','botCamPosVec_cm','slntCamPosVec_cm'};
 cameraNames     = {'Camera 3','Camera 4','Camera 5'};
-unitVecNames    = {'cam1Dot1UnitVec','cam1Dot2UnitVec','cam1Dot3UnitVec'};
-rayInVecNames   = {'cam1Dot1InVec','cam1Dot2InVec','cam1Dot3InVec'};
+unitVecNames    = {'cam1Dot1UnitVec','cam1Dot2UnitVec','cam1Dot3UnitVec',...
+                   'cam2Dot1UnitVec','cam2Dot2UnitVec','cam2Dot3UnitVec',...
+                   'cam3Dot1UnitVec','cam3Dot2UnitVec','cam3Dot3UnitVec'};
+rayInVecNames   = {'cam1Dot1InVec','cam1Dot2InVec','cam1Dot3InVec',...
+                   'cam2Dot1InVec','cam2Dot2InVec','cam2Dot3InVec',...
+                   'cam3Dot1InVec','cam3Dot2InVec','cam3Dot3InVec'};
 % rayOutVecNames = {'rogGSide','rogGBotA','rogGBotB','rogGSlant'};
 % dotVecBFNames  = {'sideDotPosVec_cm','botADotPosVec_cm','botBDotPosVec_cm'};
 dotBFName = {'portDot','starboardDot','aftDot'};
@@ -19,11 +23,11 @@ marker = {'o','*','+','.'};
 names = {'x','y','z'}; 
 line = {'-','--',':'};
 colors = {'c','m','k'};
-index = 0;
+index = 1;
 
 figHandle = figure(figNum);
 set(gca,'NextPlot','add')
-for ii = 1:length(cameraNames)
+for ii = 1:3:9
     scatter3(...
        snells(ii).camPosVec(1),...
        snells(ii).camPosVec(2),...
@@ -33,7 +37,7 @@ for ii = 1:length(cameraNames)
     index = index + 1;
 end
 
-
+index = 0;
 for ii = 1:length(unitVecNames)
     if mod(ii,3) == 1
         index = index + 1;
@@ -44,24 +48,41 @@ for ii = 1:length(unitVecNames)
        rCentroid(2,ii),...
        rCentroid(3,ii),...
        'Marker',marker{index},'CData',[0 0 1],'DisplayName',rayInVecNames{ii});
-
-    plot3(...
-       [rCentroid(1,ii) rCentroid(1,ii)+rayLength*uCentroid(1,ii)],...
-       [rCentroid(2,ii) rCentroid(2,ii)+rayLength*uCentroid(2,ii)],...
-       [rCentroid(3,ii) rCentroid(3,ii)+rayLength*uCentroid(3,ii)],...
-       'LineStyle','--','LineWidth',1,'Color',colors{ind},'DisplayName',rayNames{ind});
-
-   ind = ind + 1;
+%     if ind == 3
+        plot3(...
+           [rCentroid(1,ii) rCentroid(1,ii)+rayLength*uCentroid(1,ii)],...
+           [rCentroid(2,ii) rCentroid(2,ii)+rayLength*uCentroid(2,ii)],...
+           [rCentroid(3,ii) rCentroid(3,ii)+rayLength*uCentroid(3,ii)],...
+           'LineStyle','--','LineWidth',1,'Color',colors{ind},'DisplayName',rayNames{ind});
+%     end
+    ind = ind + 1;
 end
 
 scatter3(...
-        CoMPos(1),...
-        CoMPos(2),...
-        CoMPos(3),...
-        'Marker','x','CData',[0 0 1],'DisplayName','CoM Pos');
+    CoMPos(1),...
+    CoMPos(2),...
+    CoMPos(3),...
+    'Marker','x','CData',[0 0 1],'DisplayName','CoM Pos');
 
 RGB = calculateRotationMatrix(EulAng_rad(1),EulAng_rad(2),EulAng_rad(3));
 RBG = RGB';
+
+index = 1;
+for ii = 1:9
+    if mod(ii,3) == 1
+        index = 1;
+    end
+    camAng = [snells(ii).camEulAng(1) snells(ii).camEulAng(2) snells(ii).camEulAng(3)]'.*pi/180;
+    camRGB = calculateRotationMatrix(camAng(1),camAng(2),camAng(3));
+    camRBG = camRGB';
+    
+    plot3(...
+        [snells(ii).camPosVec(1) snells(ii).camPosVec(1)+5*camRBG(1,index)],...
+        [snells(ii).camPosVec(2) snells(ii).camPosVec(2)+5*camRBG(2,index)],...
+        [snells(ii).camPosVec(3) snells(ii).camPosVec(3)+5*camRBG(3,index)],...
+       'LineStyle',line{index},'LineWidth',1,'Color','m','DisplayName',names{index});
+    index = index + 1;
+end
 
 for ii = 1:length(dotBFName)
 %     scatter3(...
@@ -90,7 +111,7 @@ end
 legend
 grid on
 axis equal
-axis square
+% axis square
 xlabel('x')
 ylabel('y')
 zlabel('z')

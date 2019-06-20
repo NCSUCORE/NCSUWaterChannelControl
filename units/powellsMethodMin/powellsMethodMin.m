@@ -21,11 +21,11 @@ dsgnVec = zeros(100,6);
 posConv = 0.1;
 angConv = 0.1;
 
-rCentroid = zeros(3,3);
-uCentroid = zeros(3,3);
-bodyFixedVec = zeros(3,3);
+rCentroid = zeros(3,length(snells));
+uCentroid = zeros(3,length(snells));
+bodyFixedVec = zeros(3,length(snells));
 
-for ii = 1:3
+for ii = 1:length(snells)
     rCentroid(:,ii) = inputBus(ii).insideGlassVec(:);
     uCentroid(:,ii) = inputBus(ii).unitVec(:);
     bodyFixedVec(:,ii) = snells(ii).bodyFixedVec(:);

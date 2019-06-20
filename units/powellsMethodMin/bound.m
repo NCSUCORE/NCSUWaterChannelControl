@@ -28,16 +28,13 @@ function [sLeft,sRight] = bound(s0,x0,S,CoMPos,rCentroid,uCentroid,...
 sign = 1;
 
 for tryCount = 1:1000
-    if fHandle(s0-stepSize,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) >= ...
-       fHandle(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) && ...
-       fHandle(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) >= ...
-       fHandle(s0+stepSize,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec)
+    fcurrentStep = fHandle(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+    fbeforeStep = fHandle(s0-stepSize,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+    fafterStep = fHandle(s0+stepSize,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+    if fbeforeStep >= fcurrentStep && fcurrentStep >= fafterStep
         sign = +1;
         break
-    elseif fHandle(s0-stepSize,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) <= ...
-           fHandle(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) && ...
-           fHandle(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) <= ...
-           fHandle(s0+stepSize,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec)
+    elseif fbeforeStep <= fcurrentStep && fcurrentStep <= fafterStep
         sign = -1;
         break
     end
@@ -48,8 +45,9 @@ sCurrent = s0;
 for ii = 0:999
     sRight = sCurrent + sign*stepSize*2^ii;
     sLeft = sCurrent;
-    if fHandle(sRight,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec) > ...
-       fHandle(sCurrent,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec)
+    fRight = fHandle(sRight,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+    rCurrent = fHandle(sCurrent,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec);
+    if fRight > rCurrent
         break
     end
     sLeft = sCurrent;

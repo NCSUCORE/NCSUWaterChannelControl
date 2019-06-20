@@ -1,19 +1,21 @@
-timeInd = 2;
+timeInd = 50000;
 
 rayLength = 30;
-% try
-%     clf(figHandle)
-% catch
-% end
+try
+    clf(figHandle)
+catch
+end
 
 cameraNames     = {'Camera 3','Camera 4','Camera 5'};
-unitVecNames    = {'cam1Dot1UnitVec','cam1Dot2UnitVec','cam1Dot3UnitVec'};
-%                    'cam2Dot1UnitVec','cam2Dot2UnitVec','cam2Dot3UnitVec'...
-%                    'cam3Dot1UnitVec','cam3Dot2UnitVec','cam3Dot3UnitVec'};
-rayInVecNames = {'cam1Dot1InVec','cam1Dot2InVec','cam1Dot3InVec'};
-%                  'cam2Dot1InVec','cam2Dot2InVec','cam2Dot3InVec'...
-%                  'cam3Dot1InVec','cam3Dot2InVec','cam3Dot3InVec'};
-rayOutVecNames = {'cam1Dot1OutVec','cam2Dot1OutVec','cam3Dot1OutVec'};
+unitVecNames    = {'cam1Dot1UnitVec','cam1Dot2UnitVec','cam1Dot3UnitVec',...
+                   'cam2Dot1UnitVec','cam2Dot2UnitVec','cam2Dot3UnitVec',...
+                   'cam3Dot1UnitVec','cam3Dot2UnitVec','cam3Dot3UnitVec'};
+rayInVecNames = {'cam1Dot1InVec','cam1Dot2InVec','cam1Dot3InVec',...
+                 'cam2Dot1InVec','cam2Dot2InVec','cam2Dot3InVec',...
+                 'cam3Dot1InVec','cam3Dot2InVec','cam3Dot3InVec'};
+rayOutVecNames = {'cam1Dot1OutVec','cam1Dot2OutVec','cam1Dot3OutVec',...
+                  'cam2Dot1OutVec','cam2Dot2OutVec','cam2Dot3OutVec',...
+                  'cam3Dot1OutVec','cam3Dot2OutVec','cam3Dot3OutVec'};
 dotBFName = {'portDot','starboardDot','aftDot'};
 marker = {'o','*','+','.'};
 names = {'x','y','z'}; 
@@ -52,25 +54,31 @@ for ii = 1:9
     camRBG = camRGB';
     
     plot3(...
-        [snells(ii).camPosVec(1) snells(ii).camPosVec(1)+5*camRGB(1,index)],...
-        [snells(ii).camPosVec(2) snells(ii).camPosVec(2)+5*camRGB(2,index)],...
-        [snells(ii).camPosVec(3) snells(ii).camPosVec(3)+5*camRGB(3,index)],...
+        [snells(ii).camPosVec(1) snells(ii).camPosVec(1)+5*camRBG(1,index)],...
+        [snells(ii).camPosVec(2) snells(ii).camPosVec(2)+5*camRBG(2,index)],...
+        [snells(ii).camPosVec(3) snells(ii).camPosVec(3)+5*camRBG(3,index)],...
        'LineStyle',line{index},'LineWidth',1,'Color','m','DisplayName',names{index});
     index = index + 1;
 end
- 
+
+% tsc.CoMPos.Data(:,:,timeInd) = [5.25;-3;50];
+
 scatter3(...
         tsc.CoMPos.Data(1,:,timeInd),...
         tsc.CoMPos.Data(2,:,timeInd),...
         tsc.CoMPos.Data(3,:,timeInd),...
         'Marker','x','CData',[0 0 1],'DisplayName','CoM Pos');
 
-for ii = 1:1
+index = 0;
+for ii = 1:9
+    if mod(ii,3) == 1
+        index = index + 1;
+    end
     scatter3(...
        tsc.(rayOutVecNames{ii}).Data(1,:,timeInd),...
        tsc.(rayOutVecNames{ii}).Data(2,:,timeInd),...
        tsc.(rayOutVecNames{ii}).Data(3,:,timeInd),...
-       'Marker',marker{ii},'CData',[0 0 1],'DisplayName',rayOutVecNames{ii});
+       'Marker',marker{index},'CData',[0 0 1],'DisplayName',rayOutVecNames{ii});
 end
 
 index = 0;
@@ -101,6 +109,10 @@ try
     RBG = RGB';
 catch
 end
+
+% tsc.roll_deg.Data(timeInd) = 0;
+% tsc.pitch_deg.Data(timeInd) = 0;
+% tsc.yaw_deg.Data(timeInd) = 0;
 
 try
     EulAng_rad = [tsc.roll_deg.Data(timeInd) tsc.pitch_deg.Data(timeInd) tsc.yaw_deg.Data(timeInd)]'.*pi/180;
