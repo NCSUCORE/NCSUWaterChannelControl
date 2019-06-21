@@ -1,4 +1,4 @@
-timeInd = 50000;
+timeInd = 120000;
 
 rayLength = 30;
 try
@@ -121,6 +121,7 @@ try
 catch
 end
 
+EulAng_deg = EulAng_rad.*180/pi
 
 for ii = 1:length(dotBFName)
 %     scatter3(...

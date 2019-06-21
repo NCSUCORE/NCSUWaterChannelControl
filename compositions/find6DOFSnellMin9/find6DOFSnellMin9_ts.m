@@ -67,6 +67,7 @@ cam1Time = timeseries(cam1);
 cam2Time = timeseries(cam2);
 cam3Time = timeseries(cam3);
 
+%%
 
 sim('find6DOFSnellMin9_th');
 
@@ -81,44 +82,109 @@ uCentroid = [cam1Dot1UnitVec.Data(:,end),cam1Dot2UnitVec.Data(:,end),cam1Dot3Uni
              cam2Dot1UnitVec.Data(:,end),cam2Dot2UnitVec.Data(:,end),cam2Dot3UnitVec.Data(:,end),...
              cam3Dot1UnitVec.Data(:,end),cam3Dot2UnitVec.Data(:,end),cam3Dot3UnitVec.Data(:,end)];
 
-figHandle = powellsPlot(snells, CoMPos.Data(end,:), EulAng_rad, rCentroid, uCentroid, 1);
+figHandle = powellsPlot(snells, CoMPos.Data(end,:), EulAng_rad, rCentroid, uCentroid, 2);
 axis equal
 
+dotCoords = [tsc.cam1DotPos.Data(:,:,timeEnd),tsc.cam2DotPos.Data(:,:,timeEnd),tsc.cam3DotPos.Data(:,:,timeEnd)];
+
 %%
+try
+    clf(figHand)
+catch
+end
 
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_20_Jun_2019_12_17_16.mat')
-CoMPos = [5.25;-2.9;49.8];
-EulAng = [0;0;0];
+clc;clear;
 
-rCentroid = tsc.cam1Dot3InVec.Data(:,:,1);
-uCentroid = tsc.cam1Dot3UnitVec.Data(:,:,1);
-bodyFixedVec = snells(3).bodyFixedVec;
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_20_Jun_2019_14_13_56.mat');
+loadParams;
+createSnellsMinParams;
+createRayTraceCtrlBus;
+createCoordinateCtrlBus;
 
-RGB = calculateRotationMatrix(EulAng(1),EulAng(2),EulAng(3));
+timeEnd = 100000;
+
+rCentroid = [tsc.cam1Dot1InVec.Data(:,timeEnd),tsc.cam1Dot2InVec.Data(:,timeEnd),tsc.cam1Dot3InVec.Data(:,timeEnd),...
+             tsc.cam2Dot1InVec.Data(:,timeEnd),tsc.cam2Dot2InVec.Data(:,timeEnd),tsc.cam2Dot3InVec.Data(:,timeEnd),...
+             tsc.cam3Dot1InVec.Data(:,timeEnd),tsc.cam3Dot2InVec.Data(:,timeEnd),tsc.cam3Dot3InVec.Data(:,timeEnd)];
+
+uCentroid = [tsc.cam1Dot1UnitVec.Data(:,timeEnd),tsc.cam1Dot2UnitVec.Data(:,timeEnd),tsc.cam1Dot3UnitVec.Data(:,timeEnd),...
+             tsc.cam2Dot1UnitVec.Data(:,timeEnd),tsc.cam2Dot2UnitVec.Data(:,timeEnd),tsc.cam2Dot3UnitVec.Data(:,timeEnd),...
+             tsc.cam3Dot1UnitVec.Data(:,timeEnd),tsc.cam3Dot2UnitVec.Data(:,timeEnd),tsc.cam3Dot3UnitVec.Data(:,timeEnd)];
+
+bodyFixedVec = [snells(1).bodyFixedVec,snells(2).bodyFixedVec,snells(3).bodyFixedVec,...
+                snells(4).bodyFixedVec,snells(5).bodyFixedVec,snells(6).bodyFixedVec,...
+                snells(7).bodyFixedVec,snells(8).bodyFixedVec,snells(9).bodyFixedVec];
+
+EulAng_rad = [tsc.roll_rad.Data(timeEnd);tsc.pitch_rad.Data(timeEnd);tsc.yaw_rad.Data(timeEnd)];
+CoMPos = tsc.CoMPos.Data(:,:,timeEnd);
+
+RGB = calculateRotationMatrix(EulAng_rad(1),EulAng_rad(2),EulAng_rad(3));
 RBG = RGB';
 
-eMin = 10^6;
+J = 0;
+d = zeros(1,length(rCentroid));
+errVec = zeros(3,length(rCentroid));
+for ii = 1:length(rCentroid)
+    d(ii) = uCentroid(:,ii)'*(CoMPos + RBG*bodyFixedVec(:,ii) - rCentroid(:,ii));
+    e = dot( ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d(ii))),...
+             ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d(ii))) );
 
-d = uCentroid'*(CoMPos + RBG*bodyFixedVec - rCentroid);
-e = dot( ((CoMPos + RBG*bodyFixedVec) - (rCentroid + uCentroid*d)),...
-         ((CoMPos + RBG*bodyFixedVec) - (rCentroid + uCentroid*d)) );
+    errVec(:,ii) = (CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d(ii));
 
-errVec = ((CoMPos + RBG*bodyFixedVec) - (rCentroid + uCentroid*d));
+    J = J + e;
+end
          
-figure(1)
-plot3(...
-   [rCentroid(1) rCentroid(1)+d*uCentroid(1)],...
-   [rCentroid(2) rCentroid(2)+d*uCentroid(2)],...
-   [rCentroid(3) rCentroid(3)+d*uCentroid(3)],...
-   'LineStyle','--','LineWidth',1,'Color','k','DisplayName','New Ray');
+figHand = figure(1);
+set(gca,'NextPlot','add')
+legend
+grid on
 
-startPt = (rCentroid + uCentroid*dBefore);
-plot3(...
-   [startPt(1) startPt(1)+errVec(1)],...
-   [startPt(2) startPt(2)+errVec(2)],...
-   [startPt(3) startPt(3)+errVec(3)],...
-   'LineStyle','--','LineWidth',1,'Color','b','DisplayName','Error Ray');
+marker = {'o','*','+','.'};
+names = {'x','y','z'}; 
+line = {'-','--',':'};
+colors = {'c','m','k'};
+rayNames = {'Port Dot Ray','Starboard Dot Ray','Aft Dot Ray'};
+dotBFName = {'portDot','starboardDot','aftDot'};
 
-%%
+for ii = 1:length(dotBFName)
+    
+    dotVecGF = RBG * bodyFixedVec(:,ii);
+    
+    plot3(...
+        [CoMPos(1) CoMPos(1)+dotVecGF(1)],...
+        [CoMPos(2) CoMPos(2)+dotVecGF(2)],...
+        [CoMPos(3) CoMPos(3)+dotVecGF(3)],...
+       'LineStyle',line{ii},'LineWidth',1,'Color','r','DisplayName',dotBFName{ii});
+end
+
+index = 0;
+ind = 1;
+for ii = 1:length(rCentroid)
+    if mod(ii,3) == 1
+        index = index + 1;
+        ind = 1;
+    end
+    plot3(...
+       [rCentroid(1,ii) rCentroid(1,ii)+d(ii)*uCentroid(1,ii)],...
+       [rCentroid(2,ii) rCentroid(2,ii)+d(ii)*uCentroid(2,ii)],...
+       [rCentroid(3,ii) rCentroid(3,ii)+d(ii)*uCentroid(3,ii)],...
+       'LineStyle','--','LineWidth',1,'Color',colors{ind},'DisplayName',rayNames{ind});
+
+    startPt = (rCentroid(:,ii) + uCentroid(:,ii)*d(ii));
+    name = strcat('Error',rayNames{ind});
+%     plot3(...
+%        [startPt(1) startPt(1)+errVec(1,ii)],...
+%        [startPt(2) startPt(2)+errVec(2,ii)],...
+%        [startPt(3) startPt(3)+errVec(3,ii)],...
+%        'LineStyle','--','LineWidth',1,'Color',colors{ind},'DisplayName',name);
+   
+   ind = ind + 1;
+end
+
+
+axis equal
+xlabel('x')
+ylabel('y')
+zlabel('z')
 
 
