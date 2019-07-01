@@ -49,6 +49,8 @@ switch glassPlane
         nG = [0 0 -1]';
     case 2 % xz plane
         nG = [0 1 0]';
+    case 3 % yz plane
+        nG = [1 0 0]';
     otherwise
         nG = [0 0 -1]';
 end

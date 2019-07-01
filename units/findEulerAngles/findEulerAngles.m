@@ -17,7 +17,7 @@ R = [rx(1) ry(1) rz(1);...
 % Calculate pitch angle based on -R(3,1) (property of rotation matrix)
 pitch = asin(-R(3,1));
 
-% Saturate the pitch to +/- pi/4 to avoid divide by zero errors in the
+% Saturate the pitch to +/- pi/4 to  avoid divide by zero errors in the
 % next step.
 
 if pitch > pi/4

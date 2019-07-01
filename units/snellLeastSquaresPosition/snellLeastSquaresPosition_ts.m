@@ -42,41 +42,30 @@ axis square
 %%
 clc;
 
-load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_12_Jun_2019_11_07_53.mat')
+load('C:\Users\MAE-NCSUCORE\Desktop\WaterChannelControl\output\data\data_01_Jul_2019_17_43_39.mat')
 
-rCentroid1 = tsc.rCentroidSide.Data(:,:,end);
-rCentroid2 = tsc.rCentroidBotA.Data(:,:,end);
-rCentroid3 = tsc.rCentroidBotB.Data(:,:,end);
-rCentroid4 = tsc.rCentroidSlant.Data(:,:,end);
-rCentroid5 = tsc.rCentroidSide.Data(:,:,end);
-rCentroid6 = tsc.rCentroidBotA.Data(:,:,end);
-rCentroid7 = tsc.rCentroidBotB.Data(:,:,end);
-rCentroid8 = tsc.rCentroidSlant.Data(:,:,end);
-rCentroid9 = tsc.rCentroidSlant.Data(:,:,end);
+timeInd = 152666;
 
-rCentroid = [rCentroid1,rCentroid2,rCentroid3,rCentroid4,rCentroid5,...
-             rCentroid6,rCentroid7,rCentroid8,rCentroid9];
+rCentroidSide = tsc.rCentroidSide.Data(:,:,timeInd);
+rCentroidBotA = tsc.rCentroidBotA.Data(:,:,timeInd);
+rCentroidBotB = tsc.rCentroidBotB.Data(:,:,timeInd);
+rCentroidSlant = tsc.rCentroidSlant.Data(:,:,timeInd);
 
-uCentroid1 = tsc.uCentroidSide.Data(:,:,end);
-uCentroid2 = tsc.uCentroidBotA.Data(:,:,end);
-uCentroid3 = tsc.uCentroidBotB.Data(:,:,end);
-uCentroid4 = tsc.uCentroidSlant.Data(:,:,end);
-uCentroid5 = tsc.uCentroidSide.Data(:,:,end);
-uCentroid6 = tsc.uCentroidBotA.Data(:,:,end);
-uCentroid7 = tsc.uCentroidBotB.Data(:,:,end);
-uCentroid8 = tsc.uCentroidSlant.Data(:,:,end);
-uCentroid9 = tsc.uCentroidSlant.Data(:,:,end);
+uCentroidSide = tsc.uCentroidSide.Data(:,:,timeInd);
+uCentroidBotA = tsc.uCentroidBotA.Data(:,:,timeInd);
+uCentroidBotB = tsc.uCentroidBotB.Data(:,:,timeInd);
+uCentroidSlant = tsc.uCentroidSlant.Data(:,:,timeInd);
 
-uCentroid = [uCentroid1,uCentroid2,uCentroid3,uCentroid4,uCentroid5,...
-             uCentroid6,uCentroid7,uCentroid8,uCentroid9];
+body2GroundRotMat = tsc.body2GroundRotMat.Data(:,:,152665);
 
-body2GroundRotMat = eye(3);
+sideDotPosVec_cm = params.sideDotPosVec_cm.Value';
+botADotPosVec_cm = params.botADotPosVec_cm.Value';
+botBDotPosVec_cm = params.botBDotPosVec_cm.Value';
+topDotPosVec_cm = params.topDotPosVec_cm.Value';
 
-bodyFixedVec = [snells(1).bodyFixedVec,snells(2).bodyFixedVec,snells(3).bodyFixedVec,...
-                snells(4).bodyFixedVec,snells(5).bodyFixedVec,snells(6).bodyFixedVec,...
-                snells(7).bodyFixedVec,snells(8).bodyFixedVec,snells(9).bodyFixedVec];
-
-tic
-[COMPosVec] = snellLeastSquaresPosition(rCentroid,uCentroid,body2GroundRotMat,bodyFixedVec);
-toc
+[COMPosVec,sideDotPos_cm,botADotPos_cm,botBDotPos_cm,topDotPos_cm]...
+    = snellLeastSquaresPosition(rCentroidSide,rCentroidBotA,...
+        rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,...
+        uCentroidBotB,uCentroidSlant,body2GroundRotMat,...
+        sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,topDotPosVec_cm)
 
