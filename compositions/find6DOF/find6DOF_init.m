@@ -28,4 +28,4 @@ slantCamPositionVec_cm  = reshape(slantCamPositionVec_cm,[3,1]);
 sidePositionVecBF_cm    = reshape(sidePositionVecBF_cm,[3,1]);
 botAPositionVecBF_cm    = reshape(botAPositionVecBF_cm,[3,1]);
 botBPositionVecBF_cm    = reshape(botBPositionVecBF_cm,[3,1]);
-topPositionVecBF_cm    = reshape(topPositionVecBF_cm,[3,1]);
+topPositionVecBF_cm     = reshape(topPositionVecBF_cm,[3,1]);
