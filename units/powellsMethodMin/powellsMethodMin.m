@@ -1,30 +1,29 @@
 function [CoMPos,EulerAng] = powellsMethodMin(initEulerAng,inputBus,snells)
 
-%powellsMethodMin Summary of this function goes here
-%   Detailed explanation goes here
+% This function uses the outputs from the ray trace algorithm to
+%   formulate an angular optimization algorithm using Powell's conjugate 
+%   direction method 
 
-% x0 = [0 0 0]';
-% x = [roll pitch yaw]
+% INPUTS:
+% initEulerAng - initial Euler angle guess
+% inputBus - input bus structure containing vectors from the origin to 
+% point where ray exits glass and enters water and unit vectors to the dot
+%   set centroid
+% snells - snells parameter structure containing vectors from the center of
+%   mass to the dot set centroid
 
-% J = objJ(x0,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-%     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
-
-% minFcn = @(s,x) objJ(updateLaw(s,x,CoMPos,rCentroidSide,rCentroidBotA,rCentroidBotB,...
-%     rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm),CoMPos,rCentroidSide,rCentroidBotA,...
-%     rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,uCentroidSlant,...
-%     sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm);
+% initEulerAng = [roll pitch yaw]
 
 dsgnVec = zeros(100,6);
 
-posConv = 0.1;
-angConv = 0.1;
+% Convergence criteria for position and angular quantities 
+posConv = 0.1; % centimeters
+angConv = 0.1; % degrees
 
+% Form rCentroid, uCentroid, and bodyFixedVec vectors from structures
 rCentroid = zeros(3,length(snells));
 uCentroid = zeros(3,length(snells));
 bodyFixedVec = zeros(3,length(snells));
-
 for ii = 1:length(snells)
     rCentroid(:,ii) = inputBus(ii).insideGlassVec(:);
     uCentroid(:,ii) = inputBus(ii).unitVec(:);
@@ -33,15 +32,22 @@ end
 
 EulerAng = initEulerAng;
 for ii = 1:100
+    
+    % Calculate body to ground rotation matrix based on Euler angles
     RGB = calculateRotationMatrix(EulerAng(1),EulerAng(2),EulerAng(3));
     RBG = RGB';
     
+    % Calculate new center of mass position with method of least squares
+    % given ray trace vectors
     CoMPos = snellLeastSquaresPosition(rCentroid,uCentroid,RBG,bodyFixedVec);
 
+    % Calculate new Euler angle prediction using Powell's method given
+    % center of mass and ray trace vectors
     EulerAng = powellsMethod(EulerAng,CoMPos,rCentroid,uCentroid,bodyFixedVec);
    
     dsgnVec(ii,:) = [CoMPos(:)' EulerAng(:)'*180/pi];
     
+    % Check design variables for convergence
     if ii>2 && ...
             all(abs(dsgnVec(end,1:3)-dsgnVec(end-1,1:3)) < posConv) && ...
             all(abs(dsgnVec(end,4:6)-dsgnVec(end-1,4:6)) < angConv)

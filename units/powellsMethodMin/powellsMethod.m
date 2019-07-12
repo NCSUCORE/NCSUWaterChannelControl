@@ -1,32 +1,21 @@
 function desVars = powellsMethod(x0,CoMPos,rCentroid,uCentroid,bodyFixedVec)
 
-%% Inupt Parsing
-% p = inputParser;
-% addRequired(p,'x0',...
-%     @(x) isnumeric(x) && isvector(x))
-% addOptional(p,'DisplayOutput',false,...
-%     @(x) islogical(x))
-% addOptional(p,'MaxIterations',1000,...
-%     @(x) isnumeric(x) && isscalar(x) && x>0)
-% addOptional(p,'FunctionConvergence',1e-5,...
-%     @(x) isnumeric(x) && isscalar(x) && x>=0)
-% addOptional(p,'InputConvergence',0.0001,@(x) isnumeric(x) && isscalar(x) && x>=0)
-% addOptional(p,'StepTimeout',1000,...
-%     @(x) isnumeric(x) && isscalar(x))
-% addOptional(p,'StepSizeMultiplier',2,...
-%     @(x) isnumeric(x) && isscalar(x)  && x>=1)
-% addOptional(p,'BoundingTimeout',1000,...
-%     @(x) isnumeric(x) && isscalar(x))
-% addOptional(p,'FunctionHandle',...
-%     @objJ,@(x) isa(x,'function_handle'))
-% addOptional(p,'LineSearchMethod','GoldenSection',...
-%     @(x) any(strcmpi(x,{'ThreePoint','GoldenSection'})))
-% addOptional(p,'StepSize',0.001,...
-%     @(x) isnumeric(x) && isscalar(x) && x>0)
-% parse(p,x0,varargin{:})
+% This function uses Powell's method to calculate the optimal Euler angles
+%   given the center of mass position, the outputs from the ray trace
+%   algorithm, and the body fixed dot set vectors.
 
-%% The actual optimization
-inputConv = 0.001;
+% INPUTS:
+% x0 - initial Euler angle guess
+% CoMPos - center of mass position in ground frame 
+% rCentroid - inside of glass vectors from ray trace algorithm in ground frame
+% uCentroid - unit vectors from ray trace algorithm in ground grame
+% bodyFixedVec - vectors from center of mass to dot set centroids
+
+% OUTPUTS:
+% desVars - Euler angle output in radians
+
+% Convergence criteria for Euler angles
+inputConv = 0.001; % radians
 
 % Matrix to store search directions for the current cycle
 S = eye(numel(x0));
@@ -40,32 +29,15 @@ X0 = reshape(x0,[1 numel(x0)]);
 X = zeros(4,3);
 X(1,:) = X0;
 
-% if p.Results.DisplayOutput
-%     fprintf(['\nResults are reported at the end of each cycle\n',...
-%         'not each linear search'])
-%     fprintf('\n Iteration %s\n',num2str(0))
-%     assignin('base',sprintf('x%s',num2str(0)),X)
-%     evalin('base',sprintf('x%s',num2str(0)))
-% end
-
 for ii = 1:1000
     for jj = 1:size(S,1) % Loop through all the search directions
-%         switch p.Results.LineSearchMethod
-%             case 'ThreePoint'
-%                 alphaStar = threePointQuadratic(0.1,X(jj,:),S(jj,:),CoMPos,rCentroidSide,rCentroidBotA,...
-%                     rCentroidBotB,rCentroidSlant,uCentroidSide,uCentroidBotA,uCentroidBotB,...
-%                     uCentroidSlant,sideDotPosVec_cm,botADotPosVec_cm,botBDotPosVec_cm,...
-%                     p.Results.StepSize,'FunctionHandle',@powellsMethodFcn,...
-%                     'StepTimeout',p.Results.StepTimeout,...
-%                     'StepSizeMultiplier',p.Results.StepSizeMultiplier,...
-%                     'BoundingTimeout',p.Results.BoundingTimeout,...
-%                     'StepSize',p.Results.StepSize);
-%             case 'GoldenSection'
+        
+        % Use golden section to determine the optimal distance alphaStar 
         alphaLims = goldenSection(0.1,X(jj,:),S(jj,:),CoMPos,rCentroid,...
             uCentroid,bodyFixedVec,0.001,@powellsMethodFcn);
         alphaStar = mean(alphaLims);
-%         end
-%         alphaStar*S(jj,:)*180/pi
+        
+        % Find next point in cycle
         X(jj+1,:) = X(jj,:) + alphaStar*S(jj,:);
     end
     
@@ -91,17 +63,20 @@ for ii = 1:1000
 
     % Update the matrix holding the search directions
     S = [S(2:end,:);X(end,:) - X(1,:)];
+    
     % Update/reset the matrix of points
     %     if ii>2 && max(abs(X(end,(1:3)) - X(1,(1:3)))) <= p.Results.InputConvergence
     %
     %         break
     %     end
     
+    % Reset the last three design points
     X(1,:) = X(end,:);
     for kk = 2:4
         X(kk,:) = [0 0 0];
     end
     
+    % Check for convergence
     if all(abs(S(end,:))*180/pi < inputConv)
         break
     end

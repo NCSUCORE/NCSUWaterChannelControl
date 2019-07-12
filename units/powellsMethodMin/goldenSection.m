@@ -1,52 +1,27 @@
 function sLims = goldenSection(s0,x0,S,CoMPos,rCentroid,uCentroid,...
     bodyFixedVec,stepSize,fHandle)
+
 % Function to implement golden section to minimize a scalar function
 %
-% Required Inputs
-% x0       - initial guess
+% INPUTS:
+% s0 - initial guess
+% x0 - current Euler angle guess
+% S - matrix of search directions
+% CoMPos - center of mass position in ground frame 
+% rCentroid - inside of glass vectors from ray trace algorithm in ground frame
+% uCentroid - unit vectors from ray trace algorithm in ground grame
+% bodyFixedVec - vectors from center of mass to dot set centroids
 % stepSize - initial step size (step size may be reduced if this is too
 % big)
-%
-% Optional Inputs
-% DisplayOutput -  true/false prints output to command window
-% MaxIterations - Maximum number of iterations before quitting, default =
-% 1000
-% FunctionConvergence - convergence criteria for function value, set to
-% zero to disable, default = 0.01
-% InputConvergence - convergence criteria for function input, set to zero
-% to disable, default = 0.01
-% StepTimeout - Max number of iterations for bounding phase step size
-% reduction, default = 1000
-% BoundingTimeout - Max number of iterations for bounding phase, default =
-% 1000
-% 
+% fHandle - function handle containing powellsMethodFcn
 
-% Input parsing
-% p = inputParser;
-% addRequired(p,'s0',@(s) isnumeric(s) && isscalar(s))
-% % addRequired(p,'x0',@(s) isnumeric(s) && isvector(s))
-% % addRequired(p,'S',@(s) isnumeric(s) && isvector(s))
-% addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
-% addOptional(p,'DisplayOutput',false,@(s) islogical(s))
-% addOptional(p,'MaxIterations',1000,@(s) isnumeric(s) && isscalar(s) && s>0)
-% addOptional(p,'FunctionConvergence',0.0001,@(s) isnumeric(s) && isscalar(s) && s>=0)
-% addOptional(p,'InputConvergence',0.01,@(s) isnumeric(s) && isscalar(s) && s>=0)
-% addOptional(p,'StepTimeout',100,@(s) isnumeric(s) && isscalar(s))
-% addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s)  && s>=1)
-% addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
-% addOptional(p,'FunctionHandle',@objJ,@(s) isa(s,'function_handle'))
-% parse(p,s0,stepSize,varargin{:})
-% 
-% % Rename some variables to clean up code later on
-% fHandle  = p.Results.FunctionHandle;
-% stepSize = p.Results.StepSize;
-% s0       = p.Results.s0;
-% % x0       = p.Results.x0;
+% OUTPUTS:
+% sLims - two element vector containing min and max of optimal scalar
 
-% functionConv = 0.001;
-inputConv = 0.001;
+% Convergence criteria 
+inputConv = 0.001; % radians
 
-% Bounding Phase
+% Obtain left and right bounds on current scalar
 [sl,sr] = bound(s0,x0,S,CoMPos,rCentroid,uCentroid,bodyFixedVec,stepSize,fHandle);
 
 % Begin golden section
@@ -85,9 +60,6 @@ for ii = 1:1000
     
     if  abs(sMax-sMin) <= inputConv || ...
             abs((sMax-sMin)/initialRange) <= inputConv
-%         if p.Results.DisplayOutput
-%             fprintf('\nSolution converged.  Stopping program.\n')
-%         end
         break
     end
     if fOne > fTwo
@@ -98,9 +70,6 @@ for ii = 1:1000
         fr = fTwo;
     end
     
-%     if ii > 900
-%         % here
-%     end
 end
 sLims = [sl sr];
 

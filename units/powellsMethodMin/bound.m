@@ -1,29 +1,23 @@
 function [sLeft,sRight] = bound(s0,x0,S,CoMPos,rCentroid,uCentroid,...
     bodyFixedVec,stepSize,fHandle)
 
-% p = inputParser;
-% 
-% % Number of iterations before stopping attempt to tune step size
-% addOptional(p,'StepTimeout',1000,@(s) isnumeric(s) && isscalar(s))
-% % How much to increase the step size at every iteration
-% addOptional(p,'StepSizeMultiplier',2,@(s) isnumeric(s) && isscalar(s) && s>=1)
-% % Number of iterations before quitting bounding phase
-% addOptional(p,'BoundingTimeout',1000,@(s) isnumeric(s) && isscalar(s))
-% % Handle of the function that you want to minimize
-% addOptional(p,'FunctionHandle',@objJ,@(s) isa(s,'function_handle'))
-% % Initial point/guess
-% addRequired(p,'s0',@(s) isnumeric(s) && isvector(s))
-% 
-% addRequired(p,'x0',@(s) isnumeric(s) && isvector(s))
-% % Step size
-% addRequired(p,'StepSize',@(s) isnumeric(s) && isscalar(s) && s>0)
-% 
-% parse(p,s0,x0,stepSize,varargin{:})
-% 
-% fHandle  = p.Results.FunctionHandle;
-% stepSize = p.Results.StepSize;
-% s0       = p.Results.s0;
-% x0       = p.Results.x0;
+% Function to bound a given function around an inital guess.
+%
+% INPUTS:
+% s0 - initial guess
+% x0 - current Euler angle guess
+% S - matrix of search directions
+% CoMPos - center of mass position in ground frame 
+% rCentroid - inside of glass vectors from ray trace algorithm in ground frame
+% uCentroid - unit vectors from ray trace algorithm in ground grame
+% bodyFixedVec - vectors from center of mass to dot set centroids
+% stepSize - initial step size (step size may be reduced if this is too
+% big)
+% fHandle - function handle containing powellsMethodFcn
+
+% OUTPUTS:
+% sLeft - left bound on variable
+% sRight - right bound on variable
 
 sign = 1;
 

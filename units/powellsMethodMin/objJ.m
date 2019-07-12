@@ -1,38 +1,33 @@
 function J = objJ(EulAng,CoMPos,rCentroid,uCentroid,bodyFixedVec)
 
-%OBJJ Summary of this function goes here
-%   Detailed explanation goes here
+% Minimization function used as basis for powell's method optimization.
+%
+% INPUTS:
+% EulAng - current Euler angles of the body
+% CoMPos - center of mass position in ground frame 
+% rCentroid - inside of glass vectors from ray trace algorithm in ground frame
+% uCentroid - unit vectors from ray trace algorithm in ground grame
+% bodyFixedVec - vectors from center of mass to dot set centroids
+
+% OUTPUTS:
+% J - cumulmative result from formulation
 
 % x = [roll, pitch, yaw]
 J = 0;
 
+% Calculate body to ground rotation matrix given current Euler angles
 RGB = calculateRotationMatrix(EulAng(1),EulAng(2),EulAng(3));
 RBG = RGB';
 
+% Loop through all rays given from ray trace algorithms
 for ii = 1:length(rCentroid)
+    % Calculate optimal distance along unit vector
     d = uCentroid(:,ii)'*(CoMPos + RBG*bodyFixedVec(:,ii) - rCentroid(:,ii));
+    % Calculate error from current ray and dot location
     e = dot( ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d)),...
              ((CoMPos + RBG*bodyFixedVec(:,ii)) - (rCentroid(:,ii) + uCentroid(:,ii)*d)) );
 
     J = J + e;
 end
-
-% d1 = uCentroidSide'*(CoMPos - RBG*sideDotPosVec_cm - rCentroidSide);
-% e1 = dot( ((CoMPos + RBG*sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)),...
-%           ((CoMPos + RBG*sideDotPosVec_cm) - (rCentroidSide + uCentroidSide*d1)) );
-% 
-% d2 = uCentroidBotA'*(CoMPos - RBG*botADotPosVec_cm - rCentroidBotA);
-% e2 = dot( ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)),...
-%           ((CoMPos + RBG*botADotPosVec_cm) - (rCentroidBotA + uCentroidBotA*d2)) );
-% 
-% d3 = uCentroidBotB'*(CoMPos - RBG*botBDotPosVec_cm - rCentroidBotB);
-% e3 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)),...
-%           ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidBotB + uCentroidBotB*d3)) );
-% 
-% d4 = uCentroidSlant'*(CoMPos - RBG*botBDotPosVec_cm - rCentroidSlant);
-% e4 = dot( ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)),...
-%           ((CoMPos + RBG*botBDotPosVec_cm) - (rCentroidSlant + uCentroidSlant*d4)) );
-% 
-% J = e1 + e2 + e3 + e4;
 
 end

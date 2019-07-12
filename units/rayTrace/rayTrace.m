@@ -2,6 +2,7 @@ function [rogG,rigG,uiG] = ...
     rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
     glassPlane,glassThickness)
 %RAYTRACE Function to trace a ray out from a camera, into the water channel
+
 %   INPUTS:
 %   camPosVec - 3 element column vector describing the position of the
 %   center of the front of the lens, relative to the ground fixed
@@ -33,6 +34,7 @@ function [rogG,rigG,uiG] = ...
 %   next three letters are in the order
 %   [point at tip of vector][point at base of vector][coordinate system]
 %   ex: ucgG is the camera position vector in the ground frame
+
 %   OUTPUTS:
 %   rogG - vector from the ground origin to the point where the ray enters
 %   the glass, from the air, in the ground frame
