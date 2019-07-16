@@ -59,7 +59,7 @@ end
 % rotate into cam frame
 nC    = grnd2CamRotMat*nG; % unit vector normal to glass pointing out, in camera frame
 umcC  = [0 0 -1]';         % unit vector pointing at m from c in C frame
-rmcC  = dist2Glass*umcC;   % vector pointing at CG from C, in C frame
+rmcC  = dist2Glass*umcC;   % vector pointing at m from c, in C frame
 
 % unit vector pointing from c to o in C frame
 uocC = [-tan(gammaV) tan(gammaH) -1]';
@@ -67,13 +67,16 @@ uocC = [-tan(gammaV) tan(gammaH) -1]';
 uocCMag = sqrt(sum(uocC.^2));
 uocC = uocC./uocCMag;
 
+% R = [1 0        0      ;
+%      0 cos(90) -sin(90);
+%      0 sin(90)  cos(90)];
+
 % vector from c to o in C
-% rocC = linePlaneIntersect(uocC,nC,rmcC);
 [rocC,~] = linePlaneIntersect(uocC,[0 0 0]',rmcC,[0 0 0]',nC);
 
 % rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
 
-%% Step 2: Bend with Snells law
+%% Step 2: Bend with Snells law into glass
 uioC = snellsLaw3D(uocC,nC,indOfRef(1),indOfRef(2)); % Direction
 rioC = -glassThickness*uioC/dot(uioC,nC); % Scale to get correct magnitude
 

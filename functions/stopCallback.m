@@ -22,6 +22,13 @@ fprintf('\nCompiling tsc\n')
 % Note that sdi = "simulation data inspector"
 runIds = Simulink.sdi.getAllRunIDs(); % Get all run IDs from SDI
 run = Simulink.sdi.getRun(runIds(end));
+
+i = 1;
+while ~contains(run.Name, 'model2_cm')
+    run = Simulink.sdi.getRun(runIds(end - i));
+    i = i + 1;
+end
+    
 for signalIndex=1:run.SignalCount
     % Read all signals into a structure
     signalID = run.getSignalIDByIndex(signalIndex);
