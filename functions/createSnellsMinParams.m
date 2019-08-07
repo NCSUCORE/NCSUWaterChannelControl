@@ -1,7 +1,7 @@
 function createSnellsMinParams()
 
-%CREATESNELLSMINPARAMS Summary of this function goes here
-%   Detailed explanation goes here
+% This function creates the snells object for use find6DoFSnellMin9_cl bus.
+% Object contains camera and dot parameters.
 
 global params;
 
