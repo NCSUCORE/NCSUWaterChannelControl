@@ -61,7 +61,7 @@ for ii = 1:9
     index = index + 1;
 end
 
-% tsc.CoMPos.Data(:,:,timeInd) = [5.25;-3;50];
+tsc.CoMPos.Data(:,:,timeInd) = [5.25;-3;50];
 
 scatter3(...
         tsc.CoMPos.Data(1,:,timeInd),...

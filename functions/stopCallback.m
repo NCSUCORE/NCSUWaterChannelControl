@@ -62,20 +62,21 @@ for jj = 1:10000 % Use a for loop with break condition instead of while loop
             % Search for the (number) at the end of the signal name string
             startIndex = regexp(signalObjs(idx).Name,'\(\d*');
             % Signal name is everything before that
-            name = matlab.lang.makeValidName(signalObjs(idx).Name(1:startIndex-1));
+            origionalName = signalObjs(idx).Name(1:startIndex-1);
+            cleanName = matlab.lang.makeValidName(origionalName);
             % Find all signals with names that match that
-            matchMask = contains({signalObjs(:).Name},name);
-            matches = signalObjs(matchMask);
+            matchMask = contains({signalObjs(:).Name},origionalName);
+            matches   = signalObjs(matchMask);
             % Preallocate timeseries with correct dimensions
-            tsc.(name) = matches(1).Values;
+            tsc.(cleanName) = matches(1).Values;
             % Overwrite data with column vectors of nans
-            tsc.(name).Data = nan([matches(1).Dimensions 1 numel(tsc.(name).Time)]);
+            tsc.(cleanName).Data = nan([matches(1).Dimensions 1 numel(tsc.(cleanName).Time)]);
             for ii = 1:numel(matches) % For each data set with a matching name
                 % Get the index associated with it
                 index = regexp(matches(ii).Name,'\(\d*\)','match');
                 index = str2double(index{1}(2:end-1));
                 % Take the data and stuff it into the appropriate plate in tsc
-                tsc.(name).Data(index,:,:) = matches(ii).Values.Data;
+                tsc.(cleanName).Data(index,:,:) = matches(ii).Values.Data;
             end
             
             % Update the todo list

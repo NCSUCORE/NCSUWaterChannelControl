@@ -1,6 +1,6 @@
 function [rogG,rigG,uiG] = ...
     rayTrace(camPosVec,grnd2CamRotMat,dist2Glass,gammaH,gammaV,indOfRef,...
-    glassPlane,glassThickness)
+    glassPlane,glassThickness,Periscope)
 %RAYTRACE Function to trace a ray out from a camera, into the water channel
 
 %   INPUTS:
@@ -67,12 +67,18 @@ uocC = [-tan(gammaV) tan(gammaH) -1]';
 uocCMag = sqrt(sum(uocC.^2));
 uocC = uocC./uocCMag;
 
-% R = [1 0        0      ;
-%      0 cos(90) -sin(90);
-%      0 sin(90)  cos(90)];
+if Periscope ==1 
+R_correction = [cos(-0.5*pi) 0  sin(-0.5*pi);
+                   0      1     0 ;
+                  cos(-0.5*pi) 0  sin(-0.5*pi)];
 
+uocC = R_correction*uocC;
+end 
 % vector from c to o in C
 [rocC,~] = linePlaneIntersect(uocC,[0 0 0]',rmcC,[0 0 0]',nC);
+
+
+
 
 % rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
 
