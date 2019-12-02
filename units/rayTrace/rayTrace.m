@@ -77,9 +77,6 @@ end
 % vector from c to o in C
 [rocC,~] = linePlaneIntersect(uocC,[0 0 0]',rmcC,[0 0 0]',nC);
 
-
-
-
 % rocC = (dot(nC,rmcC)/dot(nC,uocC))*uocC;
 
 %% Step 2: Bend with Snells law into glass

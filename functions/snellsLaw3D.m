@@ -19,6 +19,6 @@ n = normalUVec;
 l = uVecIn;
 r = n1/n2;
 c = -dot(n,l);
-uVecOut = r*l+(r*c-sqrt(1-r^2*(1-c^2)))*n;
+uVecOut = r*l + (r*c - sqrt(1 - (r^2)*(1-c^2)))*n;
 end
 
