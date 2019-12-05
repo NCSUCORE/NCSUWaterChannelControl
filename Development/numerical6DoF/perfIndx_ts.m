@@ -2,6 +2,8 @@ clear;close all;clc
 % Test 1: performance should be zero
 posVec  = [0 0 50];
 eulAngs = [0 0 45];
+w = [1 1 1 1];
+
 % Periscope camera
 r1 = [ 51 0 50];
 u1 = [-1  0 0 ];
@@ -23,7 +25,7 @@ R = [r1(:) r2(:) r3(:) r4(:)];
 U = [u1(:) u2(:) u3(:) u4(:)];
 D = [d1(:) d2(:) d3(:) d4(:)];
 
-[J,E] = perfIndx(posVec,eulAngs*pi/180,R,D,U);
+[J,E] = perfIndx(posVec,eulAngs*pi/180,R,D,U,w);
 
 sim('perfIndx_th')
 J

@@ -1,4 +1,4 @@
-function [J,E] = perfIndx(posVec,eulAngs,R,D,U)
+function [J,E] = perfIndx(posVec,eulAngs,R,D,U,w)
 %PERFINDX Performance index characterizing how well the proposed
 %orientation and position fit the observed data.
 %   
@@ -12,6 +12,7 @@ function [J,E] = perfIndx(posVec,eulAngs,R,D,U)
 %   R: Matrix of ray tracing points in G frame, 3 by N
 %   D: Matrix of dot position vecotrs in B frame, 3 by N
 %   U: Matrix of ray tracing unit vectors in G frame, 3 by N
+%   w: N element vector of weights on each error in the performance index
 %
 %   OUTPUTS:
 %   J = sum of distance errors (not equared)
@@ -36,7 +37,7 @@ L = sum(((B+D).*U),1)-sum(R.*U,1);
 L = repmat(L(:)',[3 1]);
 
 % Calculate errors
-E = sqrt(sum((R+L.*U-B-D).^2,1));
+E = sqrt(w(:)'.*sum((R+L.*U-B-D).^2,1));
 
 % Sum errors to get perf index
 J = sum(E);
