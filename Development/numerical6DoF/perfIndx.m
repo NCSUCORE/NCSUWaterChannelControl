@@ -1,11 +1,9 @@
-function [J,E] = perfIndx(posVec,eulAngs,R,D,U,w)
+function [J,E] = perfIndx(x,R,D,U,w)
 %PERFINDX Performance index characterizing how well the proposed
 %orientation and position fit the observed data.
 %   
 %   INPUTS:
-%   posVec: 3 element position vector characterizing the vector from G to B
-%   in the G frame.
-%   eulAngs: 3 element vector of Tait-Bryan angles [roll pitch yaw] in deg
+%   x: point to be tested, [x y z roll pitch yaw], angles are in rad
 %   For a detailed explanation of the following, see numericalDoFSolution.jpg
 %   Here, N is the number of dots being tracked with the ray tracing
 %   algoritm, 
@@ -17,9 +15,11 @@ function [J,E] = perfIndx(posVec,eulAngs,R,D,U,w)
 %   OUTPUTS:
 %   J = sum of distance errors (not equared)
 %   E = vector of individual errors
+posVec  = x(1:3);
+eulAngs = x(4:6);
 
 N = size(R,2);
-rotMat = eul2Rot(eulAngs);
+rotMat = eul2Rot(eulAngs)';
 
 % Calculate B
 B = repmat(posVec(:),[1 N]);
@@ -37,7 +37,7 @@ L = sum(((B+D).*U),1)-sum(R.*U,1);
 L = repmat(L(:)',[3 1]);
 
 % Calculate errors
-E = sqrt(w(:)'.*sum((R+L.*U-B-D).^2,1));
+E = w(:)'.*sum((R+L.*U-B-D).^2,1);
 
 % Sum errors to get perf index
 J = sum(E);
