@@ -34,7 +34,11 @@ end
 
 
 tic
-xF = BFGS(x0,eye(numel(x0)),dx,1e-4,R,DBdyTrue,U,w);
+xF = BFGS(x0,eye(6),R,DBdyTrue,U,w,...
+    dx,1e-4,... 
+    1000,1000,1000,...
+    0.05,0.05,...
+    0.05*pi/180,0.05*pi/180);
 toc
 
 posVecCalc = xF(1:3);
@@ -93,4 +97,4 @@ posVecErr = (posVecTrue(:)'- posVecCalc(:)')/10
 fprintf('\nEuler angle error (deg)\n')
 eulAngErr = (eulAngTrue(:)'-eulAngCalc(:)')*180/pi
 
-save('ts2WrkSpc.mat')
+% save('ts2WrkSpc.mat')

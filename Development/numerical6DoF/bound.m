@@ -1,4 +1,4 @@
-function [sL,sR,JL,JR,err] = bound(x0,g,s,R,D,U,w)
+function [sL,sR,JL,JR,err] = bound(x0,g,s,R,D,U,w,maxIBP,err)
 
 % inputs: x0 first point to test, u0: normalized gradient at that point,
 % s: step size
@@ -17,9 +17,7 @@ if JR > JL
     sR = -s;
 end
 
-err = false;
-
-for ii = 2:50
+for ii = 2:maxIBP+1
     sNew = sR + s*2^(ii-1);
     JNew = perfIndx(x0-g*sNew,R,D,U,w);
     if JNew > JR
@@ -32,11 +30,12 @@ for ii = 2:50
         JR = JNew;
         sR = sNew; 
     end
+    % If we ran for the maximum number of iterations, quit out.
+    if ii == maxIBP+1
+        err(1) = true;
+    end
+
 end
 
-% If we ran for the maximum number of iterations, quit out.
-if ii == 50
-     err = true;
-end
 
 end

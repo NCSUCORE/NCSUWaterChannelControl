@@ -22,6 +22,6 @@ g(abs(g)<1e-10) = 0;
 % Normalize to get unit vector, with /0 protection
 u = zeros(size(g));
 if any(g~=0)
-    u = g./sqrt(sum(g,'all'));
+    u = g./sqrt(sum(sum(g.^2)));
 end
 end
