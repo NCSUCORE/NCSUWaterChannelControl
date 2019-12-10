@@ -5,8 +5,8 @@ function [x,HInv,errInt] = BFGS(x,HInv,R,D,U,w,...
     angTolBFGS,angTolGS)
 errBool = false([8 1]);
 
+errBool(2) = true;
 for ii = 1:maxIBFGS
-    
     % Search direction
     g0     = numGrad(x,dx,R,D,U,w);
     dirVec = HInv*g0(:);
@@ -37,12 +37,9 @@ for ii = 1:maxIBFGS
     % If the position is precise enough and the euler angles are too,
     if sum(s(1:3).^2) < posTolBFGS^2 && ...
             sum(s(4:6).^2)< angTolBFGS^2
+        errBool(2) = false;
         break
     end
-end
-
-if ii == maxIBFGS
-    errBool(2) = true;
 end
 
 % Bit-pack the error vector

@@ -33,11 +33,11 @@ D = DBdyTrue;
 sim('fit6DoF_th')
 
 fprintf('\nPosition error (mm)\n')
-posVecErr = (posVecTrue(:)'- posVec.Data(:)')/10
+posVecErr = (posVecTrue(:)'- posVec.signals.values(:)')/10
 fprintf('\nEuler angle error (deg)\n')
-eulAngErr = (eulAngTrue(:)'-eulAngVec.Data(:)')*180/pi
+eulAngErr = (eulAngTrue(:)'-eulAngVec.signals.values(:)')*180/pi
 
-if err.Data>0
+if err.signals.values>0
     fprintf('\nError occured\n')
 end
 

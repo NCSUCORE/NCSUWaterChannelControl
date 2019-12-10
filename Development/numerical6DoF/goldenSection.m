@@ -1,6 +1,6 @@
 function [xF,err] = goldenSection(xL,xR,R,D,U,w,maxIGS,posTol,angTol,err)
 % Function to implement golden section to minimize a scalar function
-
+err(3) = true;
 
 % Begin golden section
 tau = 1 - 0.38197;
@@ -12,6 +12,7 @@ for ii = 1:maxIGS
     
     if sum((xL(1:3)-xR(1:3)).^2) < posTol^2 &&... % Positional tolerance
             sum((xL(4:6)-xR(4:6)).^2) < angTol^2 % Angular tolerance
+        err(3) = false;
         break
     end
     if fOne>fTwo
@@ -21,8 +22,5 @@ for ii = 1:maxIGS
     end
 end
 
-if ii == maxIGS
-    err(3) = true;
-end
 xF = (xL(:)+xR(:))/2;
 end
