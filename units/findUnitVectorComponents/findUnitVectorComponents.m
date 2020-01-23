@@ -30,6 +30,9 @@ dotSeparationVec_cm  = (2*distance*tand(flip(cameraViewAngleVec_deg)))...
     .*(dotSeparation_px./imageDimensions);
 
 
+end
+
+
 
 
 
