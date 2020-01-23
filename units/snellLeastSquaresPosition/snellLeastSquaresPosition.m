@@ -80,7 +80,7 @@ Delta = [I -I  O  O;
 % Perform the minimization to calculate the optimal distance from the ray
 % exiting the glass to the dot set centroid
 alpha = (Delta*U)'*(Delta*U);
-d = -(alpha'*alpha)\(alpha'*U'*Delta'*Delta*P);
+d = -(alpha'*alpha)\(alpha'*U'*(Delta'*Delta)*P);
 
 % Calculate the center of mass position based on the calculated distance
 COMPosVec = U*d+P;

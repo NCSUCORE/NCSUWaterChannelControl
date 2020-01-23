@@ -1,4 +1,4 @@
-function [rx,ry,rz,error,rxRaw,ryRaw] = findUnitVectors(unitVecCam1,unitVecCam2a,...
+function [ux,uy,uz,error,rxRaw,ryRaw] = findUnitVectors(unitVecCam1,unitVecCam2a,...
     unitVecCam2b,unitVecCam3,sideSep,bottomASep,bottomBSep,topSep,DSB,DBL)
 %#codegen
 
@@ -16,11 +16,11 @@ function [rx,ry,rz,error,rxRaw,ryRaw] = findUnitVectors(unitVecCam1,unitVecCam2a
 % Flip sign of unit vectors from side cam (unitVecCam1) because of side
 % cam location on +y axis
 dSB = [-unitVecCam1(1)/sideSep;-unitVecCam1(2)/sideSep;...
-    unitVecCam2a(1)/bottomASep;unitVecCam2a(2)/bottomASep];
+    -unitVecCam2a(1)/bottomASep;-unitVecCam2a(2)/bottomASep];
 
 % Flip sign of unit vectors from bottom cam B (unitVecCam2b) and slant cam
 % (unitVecCam3) because of reverse orientation with ground fixed frame
-dBL = [-unitVecCam2b(1)/bottomBSep;-unitVecCam2b(2)/bottomBSep;...
+dBL = [unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
     unitVecCam3(1)/topSep;unitVecCam3(2)/topSep];
 
 % Calculate rx and ry vectors
@@ -31,34 +31,14 @@ ry = DBL * dBL;
 rxRaw = rx;
 ryRaw = ry;
 
-% Calculate magnitudes of vectors
-rxMag = sqrt((rx(1))^2+(rx(2))^2+(rx(3))^2);
-
-% If both magnitudes not equal to zero, perform normal calculation
-if (rxMag ~= 0)
-    % Normalize vector
-    rx = rx./rxMag;
-else
-    % If magnitude equal to zero, set default value to avoid divide by zero
-    rx = [1;0;0];
-end
-
-% Calculate magnitudes of vectors
-ryMag = sqrt((ry(1))^2+(ry(2))^2+(ry(3))^2);
-
-% If both magnitudes not equal to zero, perform normal calculation
-if (ryMag ~= 0)
-    % Normalize vector
-    ry = ry./ryMag;
-else
-    % If magnitude equal to zero, set default value to avoid divide by zero
-    ry = [0;1;0];
-end
+% Normalize vectors to get unit vectors
+ux = rx./max(norm(rx),eps);
+uy = ry./max(norm(ry),eps);
 
 % z = x cross y
-rz = cross(rx, ry);
+uz = cross(ux, uy);
 
 % Error is the absolute value of the dot product of the two vectors
-error = abs(dot(rx,ry));
+error = abs(dot(ux,uy));
 
 end
