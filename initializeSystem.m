@@ -8,7 +8,7 @@ baseDir = fileparts(which(mfilename));
 
 % Open the simulink project file
 fprintf('\nOpening simulink project WaterChannelControl.prj\n\n')
-simulinkproject(fullfile(baseDir,'WaterChannelControl.prj'))
+% simulinkproject(fullfile(baseDir,'WaterChannelControl.prj'))
 
 % Set working directory to output
 fprintf('\nSetting working directory to output\n')
