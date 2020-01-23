@@ -54,7 +54,7 @@ switch glassPlane
     case 3 % yz plane
         nG = [1 0 0]';
     otherwise
-        nG = [0 0 -1]';
+        error('ray trace plane error')
 end
 % rotate into cam frame
 nC    = grnd2CamRotMat*nG; % unit vector normal to glass pointing out, in camera frame
