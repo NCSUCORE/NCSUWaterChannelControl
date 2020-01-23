@@ -67,13 +67,6 @@ uocC = [-tan(gammaV) tan(gammaH) -1]';
 uocCMag = sqrt(sum(uocC.^2));
 uocC = uocC./uocCMag;
 
-if Periscope ==1 
-R_correction = [cos(-0.5*pi) 0  sin(-0.5*pi);
-                   0      1     0 ;
-                  cos(-0.5*pi) 0  sin(-0.5*pi)];
-
-uocC = R_correction*uocC;
-end 
 % vector from c to o in C
 [rocC,~] = linePlaneIntersect(uocC,[0 0 0]',rmcC,[0 0 0]',nC);
 
