@@ -16,11 +16,11 @@ function [ux,uy,uz,error,rxRaw,ryRaw] = findUnitVectors(unitVecCam1,unitVecCam2a
 % Flip sign of unit vectors from side cam (unitVecCam1) because of side
 % cam location on +y axis
 dSB = [-unitVecCam1(1)/sideSep;-unitVecCam1(2)/sideSep;...
-    -unitVecCam2a(1)/bottomASep;-unitVecCam2a(2)/bottomASep];
+    unitVecCam2a(1)/bottomASep;unitVecCam2a(2)/bottomASep];
 
 % Flip sign of unit vectors from bottom cam B (unitVecCam2b) and slant cam
 % (unitVecCam3) because of reverse orientation with ground fixed frame
-dBL = [unitVecCam2b(1)/bottomBSep;unitVecCam2b(2)/bottomBSep;...
+dBL = [-unitVecCam2b(1)/bottomBSep;-unitVecCam2b(2)/bottomBSep;...
     unitVecCam3(1)/topSep;unitVecCam3(2)/topSep];
 
 % Calculate rx and ry vectors
