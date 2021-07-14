@@ -41,7 +41,10 @@ if strcmpi(answer,'y')
     % Initialize controllers
     fprintf('\nLoading controller initialization\n')
     controllers_init
-    
+    % select RGP adaptive controller
+    CONTROLLER = 2;
+    % load RGP parameters
+    RGP_parameters;
     while ~ismember('CONTROLLER',evalin('base','who'))
         controllers_init
     end
